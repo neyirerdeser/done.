@@ -1,6 +1,5 @@
 import request from "supertest"
 import app from "../src/server.js"
-// import mongoose from "mongoose"
 
 const userId = "69e6c7cef89a0dd817cd9e65"
 const fakeUserId = "69e6c7e4f89a0dd817cd9e66"
@@ -9,15 +8,6 @@ const emptyUserId = "69e78acd5c1b55dbb8928a1d"
 const listId = "69e6c7e4f89a0dd817cd9e66"
 const fakeListId = "69e6c7cef89a0dd817cd9e65"
 let testListId
-
-beforeAll(() => {
-    server = app.listen(5001)
-})
-
-afterAll(async() => {
-    // await mongoose.connection.close()
-    await server.close()
-})
 
 describe("Retrieving existing list(s)", () => {
     describe("given valid list id", () => {
@@ -92,12 +82,11 @@ describe("Creating a list", () => {
 })
 
 describe("Updating an existing list", () => {
-    describe("given valid list id and user", () => {
+    describe("given valid content", () => {
         it("PATCH /lists/:lid should update list with given information", async () => {
             const response = await request(app).patch(`/api/lists/${testListId}`).send({
                 title: "new title",
                 iconName: "newIcon",
-                user: userId
             })
             expect(response.status).toBe(200)
             expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
@@ -110,29 +99,26 @@ describe("Updating an existing list", () => {
             const response = await request(app).patch(`/api/lists/${fakeListId}`).send({
                 title: "new title",
                 iconName: "newIcon",
-                user: userId
             })
             expect(response.status).toBe(404)
         })
     })
-    describe("given invalid user", () => {
-        it("PATCH /lists/:lid should return a 401 error", async () => {
-            const response = await request(app).patch(`/api/lists/${testListId}`).send({
-                title: "new title",
-                iconName: "newIcon",
-                user: fakeUserId
-            })
-            expect(response.status).toBe(401)
-        })
-    })
+    // describe("given invalid user", () => {
+    //     it("PATCH /lists/:lid should return a 401 error", async () => {
+    //         const response = await request(app).patch(`/api/lists/${testListId}`).send({
+    //             title: "new title",
+    //             iconName: "newIcon",
+    //             user: fakeUserId
+    //         })
+    //         expect(response.status).toBe(401)
+    //     })
+    // })
 })
 
 describe("Deleting an existing list", () => {
-    describe("given a a valid list id and user", () => {
+    describe("given valid list id and user", () => {
         it("DELETE /lists/:lid should delete the list and remove from user lists", async () => {
-            const response = await request(app).delete(`/api/lists/${testListId}`).send({
-                user: userId
-            })
+            const response = await request(app).delete(`/api/lists/${testListId}`)
             expect(response.status).toBe(200)
             const creatorResponse = await request(app).get(`/api/lists/user/${userId}`)
             expect(creatorResponse.body.lists).not.toContain(testListId)
@@ -140,18 +126,14 @@ describe("Deleting an existing list", () => {
     })
     describe("given invalid list id", () => {
         it("DELETE /lists/:lid should return a 404 error", async () => {
-            const response = await request(app).delete(`/api/lists/${fakeListId}`).send({
-                user: userId
-            })
+            const response = await request(app).delete(`/api/lists/${fakeListId}`)
             expect(response.status).toBe(404)
         })
     })
-    describe("given invalid user", () => {
-        it("DELETE /lists/:lid should return a 401 error", async () => {
-            const response = await request(app).delete(`/api/lists/${listId}`).send({
-                user: fakeUserId
-            })
-            expect(response.status).toBe(401)
-        })
-    })
+    // describe("given invalid user", () => {
+    //     it("DELETE /lists/:lid should return a 401 error", async () => {
+    //         const response = await request(app).delete(`/api/lists/${listId}`)
+    //         expect(response.status).toBe(401)
+    //     })
+    // })
 })

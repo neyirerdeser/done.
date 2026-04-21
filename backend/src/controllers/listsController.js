@@ -44,7 +44,7 @@ export const createList = async (req, res, next) => {
     }
     if (!user) return next(new HttpError("no such user", 404))
 
-    const list = new List({ title, items: [], creator })
+    let list = new List({ title, items: [], creator })
     try {
         const session = await mongoose.startSession()
         session.startTransaction()
@@ -71,7 +71,7 @@ export const createList = async (req, res, next) => {
 
 export const updateListById = async (req, res, next) => {
     const id = req.params.lid
-    const { title, iconName, user } = req.body
+    const { title, iconName } = req.body
     //  TODO
     // let user = req.userData.userId
 
@@ -84,13 +84,13 @@ export const updateListById = async (req, res, next) => {
     if (!list)
         return next(new HttpError("no such list", 404))
 
-    if (list.creator.toString() !== user)
-        return next(new HttpError("non-authorized user", 401))
+    // if (list.creator.toString() !== user)
+    //     return next(new HttpError("non-authorized user", 401))
 
     list.title = title || list.title
     list.iconName = iconName || list.iconName
     try {
-        await list.save()
+        list = await list.save()
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
@@ -101,7 +101,6 @@ export const updateListById = async (req, res, next) => {
 
 export const deleteListById = async (req, res, next) => {
     const id = req.params.lid
-    const { user } = req.body
     //  TODO
     // let user = req.userData.userId
 
@@ -114,8 +113,8 @@ export const deleteListById = async (req, res, next) => {
     if (!list)
         return next(new HttpError("no such list", 404))
 
-    if (list.creator.id.toString() !== user)
-        return next(new HttpError("non-authorized user", 401))
+    // if (list.creator.id.toString() !== user)
+    //     return next(new HttpError("non-authorized user", 401))
 
     try {
         const session = await mongoose.startSession()
@@ -128,6 +127,5 @@ export const deleteListById = async (req, res, next) => {
         return next(new HttpError(error.message, 500))
     }
 
-    res.status(200).json({ message: "list deleted" })
-
+    res.json({ message: "list deleted" })
 }

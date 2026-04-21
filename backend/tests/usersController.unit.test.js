@@ -3,40 +3,30 @@ import app from "../src/server.js"
 
 const username = "testUser"
 const password = "test123"
-const userId = "69e6c7cef89a0dd817cd9e65"
-const fakeUserId = "69e6c7e4f89a0dd817cd9e66"
 
-beforeAll(() => {
-    server = app.listen(5002)
+describe("Retrieving existing users", () => {
+    it("GET /users should return a list of users", async () => {
+        const response = await request(app).get("/api/users")
+        expect(response.status).toBe(200)
+        expect(Array.isArray(response.body["users"])).toBe(true)
+
+    })
 })
 
-afterAll(async() => {
-    // await mongoose.connection.close()
-    await server.close()
+describe("Signing up a new user", () => {
+    // describe("Given valid username", () => {
+    //     it("POST /users/signup should return new users id and token", async () => {
+            // i dont want to clutter the db with users from testing
+            // putting it aside till I learn mock db
+    //     })
+    // })
+    describe("Given invalid (already existing) username", () => {
+        it("POST /users/signup should return a 422 error", async () => {
+            const response = await request(app).post("/api/users/signup").send({ username, password })
+            expect(response.status).toBe(422)
+        })
+    })
 })
-
-
-/*
-describe("", () => {
-    it("", async () => {})
-})
-*/
-
-// describe("Retrieving existing users", () => {
-//     describe("", () => {
-//         it("", async () => {
-
-//         })
-//     })
-// })
-
-// describe("Signing up a new user", () => {
-//     describe("", () => {
-//         it("", async () => {
-
-//         })
-//     })
-// })
 
 describe("Logging in with existing user", () => {
     describe("Given valid username and password", () => {
@@ -58,7 +48,7 @@ describe("Logging in with existing user", () => {
         it("POST /users/login should return a 403 error", async () => {
             const response = await request(app).post("/api/users/login").send({
                 username,
-                password : "wrong password"
+                password: "wrong password"
             })
             expect(response.status).toBe(403)
         })

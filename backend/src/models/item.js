@@ -3,8 +3,8 @@ import mongoose from "mongoose"
 const itemSchema = new mongoose.Schema(
     {
         title: { type: String, required: true },
+        list: { type: mongoose.Types.ObjectId, ref: "List", required: true },
         detail: {
-            list: { type: mongoose.Types.ObjectId, ref: "List", required: true },
             completed: { type: Boolean, default: false },
             dueDate: { type: Date }
         }
