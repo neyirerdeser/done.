@@ -4,6 +4,7 @@ import User from "../models/user.js"
 import HttpError from "../models/httpError.js"
 
 export const getListById = async (req, res, next) => {
+    // TODO : add user auth here too. dont give lists to non-auth users
     const id = req.params.lid
     let list
     try {
@@ -16,8 +17,8 @@ export const getListById = async (req, res, next) => {
 }
 
 export const getListsByUserId = async (req, res, next) => {
+    // TODO : user ??
     const id = req.params.uid
-
     let user
     try {
         user = await User.findById(id).populate("lists")
@@ -60,8 +61,6 @@ export const createList = async (req, res, next) => {
             },
             { session, returnDocument: 'after' }
         )
-        // user.lists.push(list) // mongoose only adds the id to array
-        // await user.save({ session })
         await session.commitTransaction()
     } catch (error) {
         return next(new HttpError(error.message, 500))
@@ -108,18 +107,23 @@ export const deleteListById = async (req, res, next) => {
 
     let list
     try {
-        list = await List.findById(id)
+        list = await List.findById(id).populate("creator")
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
     if (!list)
         return next(new HttpError("no such list", 404))
 
-    if (list.creator.toString() !== user)
+    if (list.creator.id.toString() !== user)
         return next(new HttpError("non-authorized user", 401))
 
     try {
-        await List.deleteOne(list)
+        const session = await mongoose.startSession()
+        session.startTransaction()
+        list.creator.lists.pull(list)
+        await list.creator.save({ session })
+        await list.deleteOne({ session })
+        await session.commitTransaction()
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }

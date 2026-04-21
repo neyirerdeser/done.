@@ -24,6 +24,11 @@ app.use("/api/lists", listsRoutes)
 app.use("/api/items", itemsRoutes)
 
 // ERROR HANDLING
+app.use((error, _, res, next) => {
+    if (res.headerSet) return next(error); // can only send one response : incase one is already sent
+    res.status(error.code || 500);
+    res.json({ message: error.message || "unknown error. sorry :(" });
+});
 
 // LISTEN
 connectDB(process.env.MONGO_URI).then(() => {
