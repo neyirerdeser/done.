@@ -11,11 +11,7 @@ export const getUsers = async (_, res, next) => {
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
-    res.json({
-        users: users.map(
-            (user) => user.toObject({ getters: true })
-        )
-    })
+    res.json({ users })
 }
 
 export const signup = async (req, res, next) => {
@@ -42,7 +38,7 @@ export const signup = async (req, res, next) => {
         return next(new HttpError(error.message, 500))
     }
 
-    res.status(201).json({ message: "user created", userId: user.id, token })
+    res.status(201).json({ userId: user.id, token })
 }
 
 export const login = async (req, res, next) => {
