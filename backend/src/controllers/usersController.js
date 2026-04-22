@@ -4,14 +4,17 @@ import User from "../models/user.js"
 import jwt from "jsonwebtoken"
 // import bcrypt from "bcryptjs"
 
-export const getUsers = async (_, res, next) => {
-    let users
+export const getUserById = async (_, res, next) => {
+    const id = req.params.uid
+    let user
     try {
-        users = await User.find({}, "-password") // dont want to display passwords
+        user = await User.findById(id, "-password") // dont want to display passwords
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
-    res.json({ users })
+    if(!user) 
+        return next(new HttpError("no such user", 404))
+    res.json({ user })
 }
 
 export const signup = async (req, res, next) => {

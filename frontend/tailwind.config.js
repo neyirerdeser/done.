@@ -1,8 +1,22 @@
 /** @type {import('tailwindcss').Config} */
+
+import daisyui from "daisyui"
+
 export default {
-  content: ["./src/**/*.{html,js}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [daisyui],
+  daisyui: {
+    themes: [
+      "fantasy",
+      "dracula",
+    ],
+    darkTheme: "dracula",
+  },
+  darkMode: ['selector', '[data-theme="dracula"]'],
 }
