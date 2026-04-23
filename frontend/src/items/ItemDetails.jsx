@@ -6,7 +6,7 @@ import api from "../lib/axios"
 const ItemDetails = ({ item, setItem, closeModal }) => {
   const [title, setTitle] = useState(item.title)
   const [note, setNote] = useState(item.detail.note || "")
-  const [dueDate, setDueDate] = useState(item.detail.dueDate || "")
+  const [dueDate, setDueDate] = useState(item.detail.dueDate ? item.detail.dueDate.slice(0,10) : "")
   const [completed, setCompleted] = useState(item.detail.completed)
   const [saving, setSaving] = useState(false)
 
