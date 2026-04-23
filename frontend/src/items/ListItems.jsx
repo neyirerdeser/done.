@@ -37,6 +37,7 @@ const ListItems = () => {
                 setItems(response.data.items)
             } catch (error) {
                 setItems([])
+                if(error.status!==404) toast.error(error.response.data.message)
             } finally {
                 setLoading(false)
             }

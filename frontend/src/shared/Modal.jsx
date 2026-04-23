@@ -1,23 +1,25 @@
-const Modal = ({ onClose, children }) => {
+const Modal = ({ onClose, bgStyling="", fgStyling="", children }) => {
   return (
-    // backdrop
     <div
       onClick={onClose}
       className={`
         fixed inset-0
         bg-violet-950/20
-        md:invisible
+        ${bgStyling}
       `}
     >
-      {/* modal */}
       <div
+        onClick={(event) => event.stopPropagation()}
         className={`
-          bg-base-200 flex flex-col h-full w-64
+          bg-base-200
+          flex flex-col
+          h-full 
+          w-64
+          ${fgStyling}
         `}
       >
         {children}
       </div>
-
     </div>
   )
 }

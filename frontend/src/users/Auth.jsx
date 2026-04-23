@@ -2,10 +2,9 @@ import { useContext, useState } from 'react'
 import toast from 'react-hot-toast'
 
 import { AuthContext } from '../context/auth-context.js'
-import UserSVG from '../assests/UserSVG.jsx.jsx'
-import PasswordSVG from '../assests/PasswordSVG.jsx'
 import api from '../lib/axios.js'
 import { useNavigate } from 'react-router'
+import { KeyRound, UserRound } from 'lucide-react'
 
 
 const Auth = () => {
@@ -36,7 +35,7 @@ const Auth = () => {
             <form onSubmit={authSubmitHandler} className='w-auto'>
                 <div className='form-control'>
                     <label className="input input-bordered flex items-center gap-1">
-                        <UserSVG />
+                        <UserRound className='size-4 text-neutral/80' />
                         <input
                             type="text"
                             placeholder="Username"
@@ -46,7 +45,7 @@ const Auth = () => {
                     </label>
                     <div className='py-1'></div>
                     <label className="input input-bordered flex items-center gap-2">
-                        <PasswordSVG />
+                        <KeyRound className='size-4 text-neutral/80' />
                         <input
                             type="password"
                             placeholder='Password'

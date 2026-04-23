@@ -44,7 +44,7 @@ export const createItem = async (req, res, next) => {
 }
 
 export const updateItemById = async (req, res, next) => {
-    const { title, dueDate, completed } = req.body
+    const { title, dueDate, completed, note } = req.body
     const id = req.params.iid
     //  TODO
     // let user = req.userData.userId
@@ -61,7 +61,8 @@ export const updateItemById = async (req, res, next) => {
     //     return next(new HttpError("non-authorized user", 401))
 
     item.title = title || item.title
-    item.dueDate = dueDate || item.dueDate
+    item.detail.dueDate = dueDate || item.dueDate
+    item.detail.note = note || item.detail.note
     item.detail.completed = completed || item.detail.completed
     try {
         await item.save()
