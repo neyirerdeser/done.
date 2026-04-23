@@ -6,9 +6,14 @@ const MainPage = () => {
 
   return (
     <div className='h-full flex justify-center py-32 text-3xl text-base-100'>
-      {auth.loggedIn && 'click on a list to view it'}
+      {auth.loggedIn &&
+        <div className='flex flex-col items-center'>
+          <diiv>create a new list to get started or</diiv>
+          <diiv>click on an existing list to view it</diiv>
+        </div>}
       {!auth.loggedIn && 'login to get started'}
     </div>
+
   )
 }
 

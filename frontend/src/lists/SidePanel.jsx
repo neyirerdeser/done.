@@ -2,11 +2,12 @@ import { useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 import api from '../lib/axios'
-import Loading from './Loading'
+import Loading from '../shared/Loading'
 import { AuthContext } from '../context/auth-context'
 import LoginPromt from '../users/LoginPromt'
-import ListCard from '../lists/ListCard'
-import NewList from '../lists/NewList'
+import ListCard from './ListCard'
+import NewList from './NewList'
+import EmptyArea from '../shared/EmptyArea'
 
 
 const SidePanel = () => {
@@ -38,6 +39,7 @@ const SidePanel = () => {
       {auth.loggedIn && <NewList setLists={setLists} />}
       {loading && <Loading />}
       {!loading && !auth.loggedIn && <LoginPromt />}
+      {!loading && lists.length === 0 && <EmptyArea textColor={"text-neutral"}/>}
       {!loading && lists && lists.map((list) => (
         <ListCard
           key={list.id}

@@ -7,6 +7,7 @@ import Loading from "../shared/Loading"
 import ItemCard from "../items/ItemCard"
 import NewItem from "./NewItem"
 import ListTitle from "../lists/ListTitle"
+import EmptyArea from "../shared/EmptyArea"
 
 const ListItems = () => {
     const listId = useParams().lid
@@ -51,6 +52,7 @@ const ListItems = () => {
             <div className="">
                 <NewItem setItems={setItems} list={list} />
                 {loading && <Loading />}
+                {!loading && items.length == 0 && <EmptyArea textColor={"text-base-100"}/>}
                 {!loading && items.length > 0 && items.map((item) => (
                     <ItemCard
                         key={item.id}

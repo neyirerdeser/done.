@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router'
 import { useAuth } from "./hooks/auth-hook"
 import { AuthContext } from "./context/auth-context"
 
-import SidePanel from './shared/SidePanel';
+import SidePanel from './lists/SidePanel';
 import TitleBar from './shared/TitleBar';
 import Auth from './users/Auth';
 import MainPage from './shared/MainPage';

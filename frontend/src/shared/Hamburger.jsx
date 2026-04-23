@@ -1,16 +1,15 @@
-import { Menu, PanelLeftClose, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import React, { useState } from 'react'
-import SidePanel from './SidePanel'
+import SidePanel from '../lists/SidePanel'
 import Modal from './Modal'
 
 const Hamburger = () => {
     const [open, setOpen] = useState(false)
 
-
     return (
         <div>
             <div className='btn btn-ghost mt-2' onClick={() => setOpen(true)}>
-                <Menu className='size-8 text-base-200' />
+                <Menu className='size-8 text-base-100' />
             </div>
             {open &&
                 <Modal onClose={() => { setOpen(false) }}>
