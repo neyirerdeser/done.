@@ -1,7 +1,10 @@
-import { LogOut } from 'lucide-react'
-import React, { useContext, useState } from 'react'
-import { Link } from 'react-router'
-import { AuthContext } from '../context/auth-context'
+import { useContext, useState } from 'react'
+import { AuthContext } from '../context/auth-context.js'
+import UserSVG from '../assests/UserSVG.jsx.jsx'
+import PasswordSVG from '../assests/PasswordSVG.jsx'
+import api from '../lib/axios.js'
+import { useNavigate } from 'react-router'
+
 
 const Auth = () => {
     const auth = useContext(AuthContext)
@@ -9,23 +12,28 @@ const Auth = () => {
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
 
+    const navigate = useNavigate()
+
     const authSubmitHandler = async (event) => {
         event.preventDefault()
+        setLoading(true)
+        let response
+        try {
+            response = await api.post(`/users/login`, { username, password }) // returns userId, token
+            auth.login(response.data.userId, response.data.token)
+            navigate("/")
+        } catch (error) {
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
         <div className='h-full py-12 justify-items-center'>
-            <form onSibmit={authSubmitHandler} className='w-auto'>
+            <form onSubmit={authSubmitHandler} className='w-auto'>
                 <div className='form-control'>
                     <label className="input input-bordered flex items-center gap-1">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            fill="currentColor"
-                            className="h-4 w-4 opacity-70">
-                            <path
-                                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-                        </svg>
+                        <UserSVG />
                         <input
                             type="text"
                             placeholder="Username"
@@ -35,16 +43,7 @@ const Auth = () => {
                     </label>
                     <div className='py-1'></div>
                     <label className="input input-bordered flex items-center gap-2">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 16 16"
-                            fill="currentColor"
-                            className="h-4 w-4 opacity-70">
-                            <path
-                                fillRule="evenodd"
-                                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                                clipRule="evenodd" />
-                        </svg>
+                        <PasswordSVG />
                         <input
                             type="password"
                             placeholder='Password'

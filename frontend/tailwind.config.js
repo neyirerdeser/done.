@@ -8,7 +8,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        special: ["Special Elite", "system-ui"],
+      },
+    },
   },
   plugins: [daisyui],
   daisyui: {

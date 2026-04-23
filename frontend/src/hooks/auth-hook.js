@@ -14,6 +14,7 @@ export const useAuth = () => {
     setUserId(uid)
     setTokenExpiry(tokenExpiryDate)
 
+
     localStorage.setItem("userData", JSON.stringify({
       userId: uid,
       token,

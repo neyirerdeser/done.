@@ -1,0 +1,44 @@
+import { PlusIcon } from 'lucide-react'
+import { useContext, useState } from 'react'
+import api from '../lib/axios'
+import { AuthContext } from '../context/auth-context'
+
+const NewList = ({ setLists }) => {
+  const auth = useContext(AuthContext)
+  const [title, setTitle] = useState("")
+
+  const listSubmitHandler = async (event) => {
+    event.preventDefault()
+    try {
+      await api.post("/lists", { title, creator: auth.userId })
+      const response = await api.get(`/lists/user/${auth.userId}`)
+      setTitle("")
+      setLists(response.data.lists)
+    } catch (error) { }
+  }
+
+  return (
+    <div className='py-1 mr-1 mt-12'>
+      <div className='h-10 flex justify-between items-center hover:bg-base-300 p-1 rounded-md'>
+        <PlusIcon className='size-5 mx-1' />
+        <div className='flex-1 mx-2'>
+          <form onSubmit={listSubmitHandler}>
+            <div className='form-control'>
+              <label className="flex items-center">
+                <input
+                  type="text"
+                  placeholder="New List"
+                  value={title}
+                  onChange={(event) => { setTitle(event.target.value) }}
+                  className='bg-base-200'
+                />
+              </label>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default NewList
