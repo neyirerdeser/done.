@@ -1,7 +1,7 @@
 import { PlusIcon } from 'lucide-react'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import api from '../lib/axios'
-import { AuthContext } from '../context/auth-context'
 
 const NewItem = ({ list, setItems }) => {
     const [title, setTitle] = useState("")
@@ -13,12 +13,14 @@ const NewItem = ({ list, setItems }) => {
             const response = await api.get(`/items/list/${list._id}`)
             setTitle("")
             setItems(response.data.items)
-        } catch (error) {}
+        } catch (error) {
+            toast.error(error.response.data.message)
+        }
     }
 
     return (
         <div className='py-1 mr-1 '>
-            <div className='h-10 flex justify-between items-center bg-base-200 hover:bg-base-100 p-1 rounded-md'>
+            <div className='h-10 flex justify-between items-center bg-base-200 hover:bg-base-100 p-1 mr-4 rounded-md'>
                 <PlusIcon className='size-5 mx-1' />
                 <div className='flex-1 mx-2'>
                     <form onSubmit={itemSubmitHandler}>

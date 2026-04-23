@@ -1,4 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+
 import api from '../lib/axios'
 import Loading from './Loading'
 import { AuthContext } from '../context/auth-context'
@@ -20,6 +22,7 @@ const SidePanel = () => {
           const res = await api.get(`/lists/user/${auth.userId}`)
           setLists(res.data.lists)
         } catch (error) {
+          if(error.status!==404) toast.error(error.response.data.message)
         } finally {
           setLoading(false)
         }
@@ -31,7 +34,7 @@ const SidePanel = () => {
   }, [auth])
 
   return (
-    <div className='h-full mx-2'>
+    <div className='h-full mx-2 bg-base-200'>
       {auth.loggedIn && <NewList setLists={setLists} />}
       {loading && <Loading />}
       {!loading && !auth.loggedIn && <LoginPromt />}

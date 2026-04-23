@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router'
-import { Menu } from 'lucide-react';
 
 import { useAuth } from "./hooks/auth-hook"
 import { AuthContext } from "./context/auth-context"
@@ -9,6 +8,7 @@ import TitleBar from './shared/TitleBar';
 import Auth from './users/Auth';
 import MainPage from './shared/MainPage';
 import ListItems from './items/ListItems';
+import Hamburger from './shared/Hamburger';
 
 const App = () => {
   const { token, userId, login, logout } = useAuth();
@@ -27,10 +27,13 @@ const App = () => {
           <TitleBar />
           <div className='h-svh flex'>
             <div className='w-0 invisible md:visible md:w-72'>
+              <div className='mb-6'></div>
               <SidePanel />
             </div>
             <div className='flex bg-primary/20 flex-1 md:rounded-tl-2xl'>
-              <div className='visible md:invisible md:w-0 p-3'><Menu className='size-8 text-base-200' /></div>
+              <div className='visible md:invisible md:w-0 p-3'>
+                <Hamburger />
+              </div>
               <div className='h-full flex-1'>
                 <Routes>
                   <Route path="/" element={<MainPage />} />

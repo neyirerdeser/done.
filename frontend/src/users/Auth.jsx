@@ -1,4 +1,6 @@
 import { useContext, useState } from 'react'
+import toast from 'react-hot-toast'
+
 import { AuthContext } from '../context/auth-context.js'
 import UserSVG from '../assests/UserSVG.jsx.jsx'
 import PasswordSVG from '../assests/PasswordSVG.jsx'
@@ -23,6 +25,7 @@ const Auth = () => {
             auth.login(response.data.userId, response.data.token)
             navigate("/")
         } catch (error) {
+            toast.error(error.response.data.message)
         } finally {
             setLoading(false)
         }

@@ -1,3 +1,4 @@
+import toast from 'react-hot-toast'
 import { Trash2 } from 'lucide-react'
 import Icon from '../shared/Icon'
 import api from '../lib/axios'
@@ -17,7 +18,9 @@ const ListCard = ({ list, setLists }) => {
       await api.delete(`/lists/${id}`)
       const response = await api.get(`/lists/user/${auth.userId}`)
       setLists(response.data.lists)
-    } catch (error) { }
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
   }
 
   return (

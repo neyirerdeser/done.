@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import api from "../lib/axios"
 import { useParams } from "react-router"
+import toast from 'react-hot-toast'
+
 import Loading from "../shared/Loading"
 import ItemCard from "../items/ItemCard"
 import NewItem from "./NewItem"
@@ -20,6 +22,7 @@ const ListItems = () => {
                 setList(response.data.list)
             } catch (error) {
                 setList(null)
+                if(error.status!==404) toast.error(error.response.data.message)
             }
         }
         fetchList()

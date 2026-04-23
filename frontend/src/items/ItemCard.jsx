@@ -1,6 +1,7 @@
 import { Circle, Trash2 } from "lucide-react"
 import api from "../lib/axios"
 import { useState, useEffect } from "react"
+import toast from 'react-hot-toast'
 
 const ItemCard = ({ itemId, setItems }) => {
     const [item, setItem] = useState(null)
@@ -10,7 +11,9 @@ const ItemCard = ({ itemId, setItems }) => {
             try {
                 const response = await api.get(`/items/${itemId}`)
                 setItem(response.data.item)
-            } catch (error) { }
+            } catch (error) {
+                if(error.status!==404) toast.error(error.response.data.message)
+            }
         }
         fetchItem()
     }, [itemId])
@@ -26,7 +29,7 @@ const ItemCard = ({ itemId, setItems }) => {
     }
     return (
         <div className="py-1 mr-1">
-            <div className="bg-base-200 h-10 flex justify-between items-center hover:bg-base-100 disabled:bg-base-300 p-1 rounded-md">
+            <div className="bg-base-200 h-10 flex justify-between items-center hover:bg-base-100 disabled:bg-base-300 p-1 mr-4 rounded-md">
                 <Circle className='size-5 mx-1' />
                 <div className='flex-1 mx-2'>
                     {item && item.title}

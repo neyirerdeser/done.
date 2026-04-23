@@ -1,4 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+
 import api from '../lib/axios'
 import { AuthContext } from '../context/auth-context';
 import AuthButton from '../users/AuthButton';
@@ -15,6 +17,7 @@ const TitleBar = () => {
                     const res = await api.get(`/users/${auth.userId}`)
                     setUsername("welcome " + res.data.user.username)
                 } catch (error) {
+                    toast.error(error.response.data.message)
                 }
             } else {
                 setUsername("come on")

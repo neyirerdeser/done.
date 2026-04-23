@@ -1,5 +1,7 @@
 import { PlusIcon } from 'lucide-react'
 import { useContext, useState } from 'react'
+import toast from 'react-hot-toast'
+
 import api from '../lib/axios'
 import { AuthContext } from '../context/auth-context'
 
@@ -14,11 +16,13 @@ const NewList = ({ setLists }) => {
       const response = await api.get(`/lists/user/${auth.userId}`)
       setTitle("")
       setLists(response.data.lists)
-    } catch (error) { }
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
   }
 
   return (
-    <div className='py-1 mr-1 mt-12'>
+    <div className='py-1 mr-1'>
       <div className='h-10 flex justify-between items-center hover:bg-base-300 p-1 rounded-md'>
         <PlusIcon className='size-5 mx-1' />
         <div className='flex-1 mx-2'>
