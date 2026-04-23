@@ -4,7 +4,7 @@ import User from "../models/user.js"
 import jwt from "jsonwebtoken"
 // import bcrypt from "bcryptjs"
 
-export const getUserById = async (_, res, next) => {
+export const getUserById = async (req, res, next) => {
     const id = req.params.uid
     let user
     try {
