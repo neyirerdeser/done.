@@ -8,7 +8,7 @@ const ListTitle = ({ list, setList }) => {
     const titleEditHandler = async (event) => {
         event.preventDefault()
         try {
-            const response = await api.patch(`/lists/${list._id}`,{title})
+            const response = await api.patch(`/lists/${list._id}`, { title })
             setList(response.data.list)
         } catch (error) {
             toast.error(error.response.data.message)

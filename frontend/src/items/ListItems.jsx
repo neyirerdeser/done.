@@ -23,10 +23,13 @@ const ListItems = () => {
                 setList(response.data.list)
             } catch (error) {
                 setList(null)
-                if(error.status!==404) toast.error(error.response.data.message)
+                if (error.status !== 404) toast.error(error.response.data.message)
             }
         }
         fetchList()
+        return () => {
+            setList(null)
+        }
     }, [listId])
 
     useEffect(() => {
@@ -37,31 +40,35 @@ const ListItems = () => {
                 setItems(response.data.items)
             } catch (error) {
                 setItems([])
-                if(error.status!==404) toast.error(error.response.data.message)
+                if (error.status !== 404) toast.error(error.response.data.message)
             } finally {
                 setLoading(false)
             }
         }
         fetchItems()
+        return () => {
+            setItems([])
+        }
+
     }, [list])
 
 
 
     return (
         <div className="h-full">
-            {list && <ListTitle list={list} setList={setList} />}
-            <div className="">
+            {loading && <Loading />}
+            {!loading && <div>
+                {list && <ListTitle list={list} setList={setList} />}
                 <NewItem setItems={setItems} list={list} />
-                {loading && <Loading />}
-                {!loading && items.length == 0 && <EmptyArea textColor={"text-base-100"}/>}
-                {!loading && items.length > 0 && items.map((item) => (
+                {items.length == 0 && <EmptyArea textColor={"text-base-100"} />}
+                {items.length > 0 && items.map((item) => (
                     <ItemCard
                         key={item.id}
                         itemId={item}
                         setItems={setItems}
                     />
                 ))}
-            </div>
+            </div>}
         </div>
     )
 }

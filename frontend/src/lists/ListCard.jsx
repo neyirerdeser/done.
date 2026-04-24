@@ -5,19 +5,23 @@ import api from '../lib/axios'
 import { Link } from 'react-router'
 import { useContext, useState } from 'react'
 import { AuthContext } from '../context/auth-context'
+import { useDispatch } from 'react-redux'
+import { setLists } from '../lib/listSlice'
+
 
 // TODO fix/remove backgounrd colouring when selected
 
-const ListCard = ({ list, setLists }) => {
+const ListCard = ({ list }) => {
   const auth = useContext(AuthContext)
+  const dispatch = useDispatch()
 
   const deleteHandler = async (event, id) => {
     event.preventDefault()
-    if(!window.confirm("Are you sure you'd like to delete this list? This cannot be undone.")) return
+    if (!window.confirm("Are you sure you'd like to delete this list? This cannot be undone.")) return
     try {
       await api.delete(`/lists/${id}`)
       const response = await api.get(`/lists/user/${auth.userId}`)
-      setLists(response.data.lists)
+      dispatch(setLists(response.data.lists))
     } catch (error) {
       toast.error(error.response.data.message)
     }

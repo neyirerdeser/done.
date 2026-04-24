@@ -1,5 +1,4 @@
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router'
-
+import { BrowserRouter as Router, Route, Routes } from 'react-router'
 import { useAuth } from "./hooks/auth-hook"
 import { AuthContext } from "./context/auth-context"
 
@@ -11,7 +10,7 @@ import ListItems from './items/ListItems';
 import Hamburger from './shared/Hamburger';
 
 const App = () => {
-  const { token, userId, login, logout } = useAuth();
+  const { token, userId, login, logout } = useAuth()
 
   return (
     <div className="position-absolute overflow-clip bg-base-200" data-theme="fantasy">

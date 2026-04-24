@@ -33,7 +33,7 @@ const ItemDetails = ({ item, setItem, closeModal }) => {
           <input
             className="checkbox border-neutral/80 rounded-lg flex-0 bg-base-100 ml-3.5"
             type="checkbox"
-            value={completed}
+            checked={completed}
             onChange={() => { setCompleted(!completed) }}
           />
           <label className="input flex flex-1 items-center">

@@ -1,13 +1,17 @@
 import { PlusIcon } from 'lucide-react'
 import { useContext, useState } from 'react'
+import { setLists } from '../lib/listSlice'
+
 import toast from 'react-hot-toast'
 
 import api from '../lib/axios'
 import { AuthContext } from '../context/auth-context'
+import { useDispatch } from 'react-redux'
 
-const NewList = ({ setLists }) => {
+const NewList = () => {
   const auth = useContext(AuthContext)
   const [title, setTitle] = useState("")
+  const dispatch = useDispatch()
 
   const listSubmitHandler = async (event) => {
     event.preventDefault()
@@ -15,7 +19,7 @@ const NewList = ({ setLists }) => {
       await api.post("/lists", { title, creator: auth.userId })
       const response = await api.get(`/lists/user/${auth.userId}`)
       setTitle("")
-      setLists(response.data.lists)
+      dispatch(setLists(response.data.lists))
     } catch (error) {
       toast.error(error.response.data.message)
     }
@@ -34,7 +38,7 @@ const NewList = ({ setLists }) => {
                   placeholder="New List"
                   value={title}
                   onChange={(event) => { setTitle(event.target.value) }}
-                  className='bg-base-200'
+                  className='bg-base-200 hover:bg-base-300'
                 />
               </label>
             </div>

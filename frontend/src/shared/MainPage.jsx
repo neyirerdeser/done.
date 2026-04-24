@@ -8,8 +8,8 @@ const MainPage = () => {
     <div className='h-full flex justify-center py-32 text-3xl text-base-100'>
       {auth.loggedIn &&
         <div className='flex flex-col items-center'>
-          <diiv>create a new list to get started or</diiv>
-          <diiv>click on an existing list to view it</diiv>
+          <div>create a new list to get started or</div>
+          <div>click on an existing list to view it</div>
         </div>}
       {!auth.loggedIn && 'login to get started'}
     </div>

@@ -31,7 +31,7 @@ const NewItem = ({ list, setItems }) => {
                                     placeholder="New Item"
                                     value={title}
                                     onChange={(event) => { setTitle(event.target.value) }}
-                                    className='bg-base-200'
+                                    className='bg-base-200 hover:bg-base-100'
                                 />
                             </label>
                         </div>
