@@ -1,16 +1,21 @@
 import { PlusIcon } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import toast from 'react-hot-toast'
 import api from '../lib/axios'
 
+import { AuthContext } from '../context/auth-context'
+
+
 const NewItem = ({ list, setItems }) => {
+    const auth = useContext(AuthContext)
+    const headers = { Authorization: "Bearer " + auth.token }
     const [title, setTitle] = useState("")
 
     const itemSubmitHandler = async (event) => {
         event.preventDefault()
         try {
-            await api.post("/items", { title, list })
-            const response = await api.get(`/items/list/${list._id}`)
+            await api.post("/items", { title, list }, { headers })
+            const response = await api.get(`/items/list/${list._id}`, { headers })
             setTitle("")
             setItems(response.data.items)
         } catch (error) {

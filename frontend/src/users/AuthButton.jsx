@@ -4,7 +4,7 @@ import { AuthContext } from '../context/auth-context';
 import { Link } from 'react-router';
 
 
-const AuthButton = (authentication) => {
+const AuthButton = () => {
   const auth = useContext(AuthContext);
 
   return (

@@ -5,15 +5,17 @@ import HttpError from "../models/httpError.js"
 
 export const createItem = async (req, res, next) => {
     const { title, list, dueDate } = req.body
+    const userId = req.userData.userId
 
-    let parentList
+    let listObj
     try {
-        parentList = await List.findById(list)
+        listObj = await List.findById(list)
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
-    if (!parentList)
-        return next(new HttpError("no such list", 404))
+    
+    if (!listObj) return next(new HttpError("no such list", 404))
+    if (listObj.creator.toString() != userId) return next(new HttpError("non-authorized user", 401))
 
     let item = new Item({ title, list })
     item.populate("list")
@@ -46,8 +48,7 @@ export const createItem = async (req, res, next) => {
 export const updateItemById = async (req, res, next) => {
     const { title, dueDate, completed, note } = req.body
     const id = req.params.iid
-    //  TODO
-    // let user = req.userData.userId
+    let user = req.userData.userId
 
     let item
     try {
@@ -57,8 +58,8 @@ export const updateItemById = async (req, res, next) => {
     }
     if (!item)
         return next(new HttpError("no such item", 404))
-    // if (item.list.creator.toString() !== user)
-    //     return next(new HttpError("non-authorized user", 401))
+    if (item.list.creator.toString() !== user)
+        return next(new HttpError("non-authorized user", 401))
 
     item.title = title || item.title
     item.detail.dueDate = dueDate || item.detail.dueDate

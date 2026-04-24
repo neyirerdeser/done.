@@ -1,14 +1,21 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
 import api from "../lib/axios"
 import toast from 'react-hot-toast'
 
+import { AuthContext } from '../context/auth-context'
+
 const ListTitle = ({ list, setList }) => {
+    const auth = useContext(AuthContext)
+    const headers = { Authorization: "Bearer " + auth.token }
+
     const [title, setTitle] = useState(list.title)
 
     const titleEditHandler = async (event) => {
         event.preventDefault()
         try {
-            const response = await api.patch(`/lists/${list._id}`, { title })
+            const response = await api.patch(`/lists/${list._id}`,
+                { title }, { headers }
+            )
             setList(response.data.list)
         } catch (error) {
             toast.error(error.response.data.message)

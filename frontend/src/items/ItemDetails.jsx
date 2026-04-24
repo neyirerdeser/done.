@@ -2,11 +2,15 @@ import { CalendarDays, StickyNote } from "lucide-react"
 import { useState } from "react"
 import toast from "react-hot-toast"
 import api from "../lib/axios"
+import { useContext } from "react"
+import { AuthContext } from '../context/auth-context'
 
 const ItemDetails = ({ item, setItem, closeModal }) => {
+  const auth = useContext(AuthContext)
+  const headers = { Authorization: "Bearer " + auth.token }
   const [title, setTitle] = useState(item.title)
   const [note, setNote] = useState(item.detail.note || "")
-  const [dueDate, setDueDate] = useState(item.detail.dueDate ? item.detail.dueDate.slice(0,10) : "")
+  const [dueDate, setDueDate] = useState(item.detail.dueDate ? item.detail.dueDate.slice(0, 10) : "")
   const [completed, setCompleted] = useState(item.detail.completed)
   const [saving, setSaving] = useState(false)
 
@@ -14,9 +18,7 @@ const ItemDetails = ({ item, setItem, closeModal }) => {
     event.preventDefault()
     setSaving(true)
     try {
-      const response = await api.patch(`/items/${item._id}`, {
-        title, dueDate, completed, note
-      })
+      const response = await api.patch(`/items/${item._id}`, { title, dueDate, completed, note }, { headers })
       setItem(response.data.item)
       closeModal()
     } catch (error) {

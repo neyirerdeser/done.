@@ -4,7 +4,7 @@ import User from "../models/user.js"
 import HttpError from "../models/httpError.js"
 
 export const getListById = async (req, res, next) => {
-    // TODO : add user auth here too. dont give lists to non-auth users
+    let user = req.userData.userId
     const id = req.params.lid
     let list
     try {
@@ -13,12 +13,15 @@ export const getListById = async (req, res, next) => {
         return next(new HttpError(error.message, 500))
     }
     if (!list) return next(new HttpError("no such list", 404))
+    if (list.creator.toString() != user) return next(new HttpError("non-authorized user", 401))
+    
     res.json({ list })
 }
 
 export const getListsByUserId = async (req, res, next) => {
-    // TODO : user ??
+    const userId = req.userData.userId
     const id = req.params.uid
+    if(userId != id) return next(new HttpError("non-authorized user", 401))
     let user
     try {
         user = await User.findById(id).populate("lists")
@@ -33,8 +36,7 @@ export const getListsByUserId = async (req, res, next) => {
 
 export const createList = async (req, res, next) => {
     const { title, creator } = req.body
-    // TODO
-    // const creator = req.userData.userId
+    const userId = req.userData.userId
 
     let user
     try {
@@ -43,6 +45,7 @@ export const createList = async (req, res, next) => {
         return next(new HttpError(error.message, 500))
     }
     if (!user) return next(new HttpError("no such user", 404))
+    if (user.id != userId) return next(new HttpError("non-authorized user", 401))
 
     let list = new List({ title, items: [], creator })
     try {
@@ -72,8 +75,7 @@ export const createList = async (req, res, next) => {
 export const updateListById = async (req, res, next) => {
     const id = req.params.lid
     const { title, iconName } = req.body
-    //  TODO
-    // let user = req.userData.userId
+    let userId = req.userData.userId
 
     let list
     try {
@@ -84,8 +86,8 @@ export const updateListById = async (req, res, next) => {
     if (!list)
         return next(new HttpError("no such list", 404))
 
-    // if (list.creator.toString() !== user)
-    //     return next(new HttpError("non-authorized user", 401))
+    if (list.creator.toString() !== userId)
+        return next(new HttpError("non-authorized user", 401))
 
     list.title = title || list.title
     list.iconName = iconName || list.iconName
@@ -101,8 +103,7 @@ export const updateListById = async (req, res, next) => {
 
 export const deleteListById = async (req, res, next) => {
     const id = req.params.lid
-    //  TODO
-    // let user = req.userData.userId
+    let userId = req.userData.userId
 
     let list
     try {
@@ -113,8 +114,8 @@ export const deleteListById = async (req, res, next) => {
     if (!list)
         return next(new HttpError("no such list", 404))
 
-    // if (list.creator.id.toString() !== user)
-    //     return next(new HttpError("non-authorized user", 401))
+    if (list.creator.id.toString() !== userId)
+        return next(new HttpError("non-authorized user", 401))
 
     try {
         const session = await mongoose.startSession()

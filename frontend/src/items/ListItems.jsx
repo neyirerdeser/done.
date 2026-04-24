@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import api from "../lib/axios"
 import { useParams } from "react-router"
 import toast from 'react-hot-toast'
 
+import { AuthContext } from '../context/auth-context'
 import Loading from "../shared/Loading"
 import ItemCard from "../items/ItemCard"
 import NewItem from "./NewItem"
@@ -11,6 +12,8 @@ import EmptyArea from "../shared/EmptyArea"
 
 const ListItems = () => {
     const listId = useParams().lid
+    const auth = useContext(AuthContext)
+    const headers = { Authorization: "Bearer " + auth.token }
     const [list, setList] = useState(null)
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(true)
@@ -19,7 +22,7 @@ const ListItems = () => {
         const fetchList = async () => {
             setLoading(true)
             try {
-                const response = await api.get(`/lists/${listId}`)
+                const response = await api.get(`/lists/${listId}`, { headers })
                 setList(response.data.list)
             } catch (error) {
                 setList(null)
@@ -36,7 +39,7 @@ const ListItems = () => {
         const fetchItems = async () => {
             setLoading(true)
             try {
-                const response = await api.get(`/items/list/${listId}`)
+                const response = await api.get(`/items/list/${listId}`, { headers })
                 setItems(response.data.items)
             } catch (error) {
                 setItems([])
@@ -63,7 +66,7 @@ const ListItems = () => {
                 {items.length == 0 && <EmptyArea textColor={"text-base-100"} />}
                 {items.length > 0 && items.map((item) => (
                     <ItemCard
-                        key={item.id}
+                        key={item._id}
                         itemId={item}
                         setItems={setItems}
                     />

@@ -15,6 +15,7 @@ import { setLists } from '../lib/listSlice'
 const SidePanel = () => {
   const [loading, setLoading] = useState(false)
   const auth = useContext(AuthContext)
+  const headers = { Authorization: "Bearer " + auth.token }
   const lists = useSelector((state) => state.lists)
   const dispatch = useDispatch()
 
@@ -23,7 +24,7 @@ const SidePanel = () => {
       if (auth.loggedIn) {
         setLoading(true)
         try {
-          const res = await api.get(`/lists/user/${auth.userId}`)
+          const res = await api.get(`/lists/user/${auth.userId}`, { headers })
           dispatch(setLists(res.data.lists))
         } catch (error) {
           if (error.status !== 404) toast.error(error.response.data.message)

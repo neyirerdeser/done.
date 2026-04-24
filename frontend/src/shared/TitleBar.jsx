@@ -8,13 +8,14 @@ import done from '../assests/done-purple.png'
 
 const TitleBar = () => {
     const auth = useContext(AuthContext);
+    const headers = { Authorization: "Bearer " + auth.token }
     const [username, setUsername] = useState("come on")
 
     useEffect(() => {
         const getUsername = async () => {
             if (auth.loggedIn) {
                 try {
-                    const res = await api.get(`/users/${auth.userId}`)
+                    const res = await api.get(`/users/${auth.userId}`, { headers })
                     setUsername("welcome " + res.data.user.username)
                 } catch (error) {
                     toast.error(error.response.data.message)

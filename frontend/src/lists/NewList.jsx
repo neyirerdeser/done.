@@ -10,14 +10,16 @@ import { useDispatch } from 'react-redux'
 
 const NewList = () => {
   const auth = useContext(AuthContext)
+  const headers = { Authorization: "Bearer " + auth.token }
   const [title, setTitle] = useState("")
   const dispatch = useDispatch()
 
   const listSubmitHandler = async (event) => {
     event.preventDefault()
     try {
-      await api.post("/lists", { title, creator: auth.userId })
-      const response = await api.get(`/lists/user/${auth.userId}`)
+      await api.post("/lists",
+        { title, creator: auth.userId }, { headers })
+      const response = await api.get(`/lists/user/${auth.userId}`, { headers })
       setTitle("")
       dispatch(setLists(response.data.lists))
     } catch (error) {
