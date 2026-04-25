@@ -12,6 +12,7 @@ const Auth = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
+    const [signup, setSignup] = useState(false)
 
     const navigate = useNavigate()
 
@@ -20,6 +21,9 @@ const Auth = () => {
         setLoading(true)
         let response
         try {
+            // first create if needed
+            if (signup) await api.post(`/users/signup`, { username, password })
+            // then login
             response = await api.post(`/users/login`, { username, password }) // returns userId, token
             auth.login(response.data.userId, response.data.token)
             navigate("/")
@@ -55,11 +59,15 @@ const Auth = () => {
                     </label>
                 </div>
                 <div className='card-actions justify-center pt-4'>
-                    <button type='submit' disabled={loading} className='btn btn-outline btn-primary btn-ghost'>
-                        {loading ? "logging in" : "login"}
+                    <button type='submit' disabled={loading} className='btn btn-outline btn-primary btn-ghost w-20'>
+                        {!signup && <div>{loading ? "logging in" : "login"}</div>}
+                        {signup && <div>{loading ? "signing up" : "signup"}</div>}
                     </button>
                 </div>
             </form>
+            <div className='hover:text-primary/50 mt-2 text-primary underline' onClick={() => { setSignup(!signup) }}>
+                {signup ? "Already have an account? Login instead." : "Don't have an account? Signup now!"}
+            </div>
         </div>
     )
 }
