@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, { isValidObjectId } from "mongoose"
 import List from "../models/list.js"
 import User from "../models/user.js"
 import HttpError from "../models/httpError.js"
@@ -6,6 +6,7 @@ import HttpError from "../models/httpError.js"
 export const getListById = async (req, res, next) => {
     let user = req.userData.userId
     const id = req.params.lid
+    if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let list
     try {
         list = await List.findById(id)
@@ -21,6 +22,9 @@ export const getListById = async (req, res, next) => {
 export const getListsByUserId = async (req, res, next) => {
     const userId = req.userData.userId
     const id = req.params.uid
+    if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
+    console.log(isValidObjectId(id))
+
     if(userId != id) return next(new HttpError("non-authorized user", 401))
     let user
     try {
@@ -77,6 +81,7 @@ export const updateListById = async (req, res, next) => {
     const { title, iconName } = req.body
     let userId = req.userData.userId
 
+    if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let list
     try {
         list = await List.findById(id)
@@ -105,6 +110,7 @@ export const deleteListById = async (req, res, next) => {
     const id = req.params.lid
     let userId = req.userData.userId
 
+    if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let list
     try {
         list = await List.findById(id).populate("creator")

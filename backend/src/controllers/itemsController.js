@@ -13,7 +13,7 @@ export const createItem = async (req, res, next) => {
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
-    
+
     if (!listObj) return next(new HttpError("no such list", 404))
     if (listObj.creator.toString() != userId) return next(new HttpError("non-authorized user", 401))
 
@@ -49,6 +49,7 @@ export const updateItemById = async (req, res, next) => {
     const id = req.params.iid
     let user = req.userData.userId
 
+    if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let item
     try {
         item = await Item.findById(id).populate("list")
@@ -63,7 +64,7 @@ export const updateItemById = async (req, res, next) => {
     item.title = title || item.title
     item.detail.dueDate = dueDate || item.detail.dueDate
     item.detail.note = note || item.detail.note
-    if(typeof(completed) === 'boolean')
+    if (typeof (completed) === 'boolean')
         item.detail.completed = completed
     try {
         await item.save()
@@ -75,6 +76,9 @@ export const updateItemById = async (req, res, next) => {
 
 export const deleteItemById = async (req, res, next) => {
     const id = req.params.iid
+    let user = req.userData.userId
+
+    if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let item
     try {
         item = await Item.findById(id).populate("list")
@@ -83,8 +87,8 @@ export const deleteItemById = async (req, res, next) => {
     }
     if (!item)
         return next(new HttpError("no such item", 404))
-    // if (item.list.creator.toString() !== user)
-    //     return next(new HttpError("non-authorized user", 401))
+    if (item.list.creator.toString() !== user)
+        return next(new HttpError("non-authorized user", 401))
 
     try {
         const session = await mongoose.startSession()
@@ -102,6 +106,8 @@ export const deleteItemById = async (req, res, next) => {
 
 export const getItemById = async (req, res, next) => {
     const id = req.params.iid
+
+    if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let item
     try {
         item = await Item.findById(id)
@@ -114,6 +120,8 @@ export const getItemById = async (req, res, next) => {
 
 export const getItemsByListId = async (req, res, next) => {
     const id = req.params.lid
+
+    if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let list
     try {
         list = await List.findById(id)

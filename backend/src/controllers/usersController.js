@@ -6,13 +6,14 @@ import jwt from "jsonwebtoken"
 
 export const getUserById = async (req, res, next) => {
     const id = req.params.uid
+    if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let user
     try {
         user = await User.findById(id, "-password") // dont want to display passwords
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
-    if(!user) 
+    if (!user)
         return next(new HttpError("no such user", 404))
     res.json({ user })
 }
