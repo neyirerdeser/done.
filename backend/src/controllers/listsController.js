@@ -28,7 +28,7 @@ export const getListsByUserId = async (req, res, next) => {
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
-    if (!user || user.lists.length === 0)
+    if (!user)
         return next(new HttpError("no lists exist for such user", 404))
 
     res.json({ lists: user.lists })

@@ -25,8 +25,7 @@ export const createItem = async (req, res, next) => {
         const session = await mongoose.startSession()
         session.startTransaction()
         await item.save({ session })
-        item.list = await List.updateOne(
-            item.list,
+        await item.list.updateOne(
             {
                 $push: {
                     items: {
@@ -121,7 +120,7 @@ export const getItemsByListId = async (req, res, next) => {
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
-    if (!list || list.items.length === 0)
+    if (!list)
         return next(new HttpError("no items exist for such list", 404))
 
     res.json({ items: list.items })
