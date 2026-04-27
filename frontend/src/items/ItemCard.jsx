@@ -20,7 +20,8 @@ const ItemCard = ({ itemId, setItems }) => {
         setItem(response.data.item)
         setCompleted(response.data.item.detail.completed)
       } catch (error) {
-        if (error.status !== 404) toast.error(error.response.data.message)
+        setItem(null)
+        toast.error(error.response.data.message)
       }
     }
     fetchItem()
@@ -38,7 +39,7 @@ const ItemCard = ({ itemId, setItems }) => {
       const response = await api.get(`/items/list/${item.list}`, { headers })
       setItems(response.data.items)
     } catch (error) {
-      if (error.status !== 404) toast.error(error.response.data.message)
+      toast.error(error.response.data.message)
     }
 
   }
@@ -50,7 +51,7 @@ const ItemCard = ({ itemId, setItems }) => {
       setCompleted(!completed)
       setItem(response.data.item)
     } catch (error) {
-      if (error.status !== 404) toast.error(error.response.data.message)
+      toast.error(error.response.data.message)
     }
   }
 
@@ -72,7 +73,7 @@ const ItemCard = ({ itemId, setItems }) => {
           </button>
         </div>}
       {detailsOpen &&
-        <Modal onClose={() => { setDetailsOpen(false) }} fgStyling='w-80 place-self-end'>
+        <Modal open={detailsOpen} onClose={() => { setDetailsOpen(false) }} fgStyling='w-80 place-self-end'>
           <div className='mt-6 btn btn-ghost btn-sm px-0.5 mx-5 place-self-end' onClick={() => setDetailsOpen(false)}>
             <X className='size-5 text-primary' />
           </div>

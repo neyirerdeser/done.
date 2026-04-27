@@ -25,7 +25,7 @@ const NewItem = ({ list, setItems }) => {
 
     return (
         <div className='py-1 mr-1 '>
-            <div className='h-10 flex justify-between items-center bg-base-200 hover:bg-base-100 p-1 mr-4 rounded-md'>
+            <div className='group h-10 flex justify-between items-center bg-base-200 hover:bg-base-100 p-1 mr-4 rounded-md'>
                 <PlusIcon className='size-5 mx-1' />
                 <div className='flex-1 mx-2'>
                     <form onSubmit={itemSubmitHandler}>
@@ -36,7 +36,7 @@ const NewItem = ({ list, setItems }) => {
                                     placeholder="New Item"
                                     value={title}
                                     onChange={(event) => { setTitle(event.target.value) }}
-                                    className='bg-base-200 hover:bg-base-100'
+                                    className='bg-base-200 group-hover:bg-base-100'
                                 />
                             </label>
                         </div>

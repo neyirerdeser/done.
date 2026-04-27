@@ -33,6 +33,7 @@ const ListTitle = ({ list, setList }) => {
                                 placeholder="New Item"
                                 value={title}
                                 onChange={(event) => { setTitle(event.target.value) }}
+                                onBlur={titleEditHandler}
                                 className='bg-transparent'
                             />
                         </label>

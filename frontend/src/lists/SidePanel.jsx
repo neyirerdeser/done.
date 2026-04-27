@@ -27,7 +27,8 @@ const SidePanel = () => {
           const res = await api.get(`/lists/user/${auth.userId}`, { headers })
           dispatch(setLists(res.data.lists))
         } catch (error) {
-          if (error.status !== 404) toast.error(error.response.data.message)
+          dispatch(setLists([]))
+          toast.error(error.response.data.message)
         } finally {
           setLoading(false)
         }

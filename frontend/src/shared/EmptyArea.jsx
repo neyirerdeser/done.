@@ -1,12 +1,18 @@
 import { CornerLeftUp } from 'lucide-react'
+import { useContext } from 'react'
+import { AuthContext } from '../context/auth-context'
 
-const EmptyArea = ({textColor}) => {
+
+const EmptyArea = ({ textColor }) => {
+  const auth = useContext(AuthContext)
   return (
     <div className='flex p-3 text-lg'>
-        <CornerLeftUp className={`${textColor} size-5`}/>
+      {auth.userId && <div>
+        <CornerLeftUp className={`${textColor} size-5`} />
         <div className={`${textColor} ml-2`}>
-            so empty, let's fill it up
+          so empty, let's fill it up
         </div>
+      </div>}
     </div>
   )
 }

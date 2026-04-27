@@ -1,4 +1,4 @@
-const Modal = ({ onClose, bgStyling="", fgStyling="", children }) => {
+const Modal = ({ open, onClose, bgStyling="", fgStyling="", children }) => {
   return (
     <div
       onClick={onClose}
@@ -13,8 +13,9 @@ const Modal = ({ onClose, bgStyling="", fgStyling="", children }) => {
         className={`
           bg-base-200
           flex flex-col
-          h-full 
-          w-64
+          h-full
+          transition-all duration-300 delay-150
+          ${open ? "opacity-100 scale-100 ease-in" : "opacity-0 scale-95 ease-out"}
           ${fgStyling}
         `}
       >

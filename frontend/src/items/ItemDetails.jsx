@@ -67,16 +67,13 @@ const ItemDetails = ({ item, setItem, closeModal }) => {
         </label>
       </div>
       <div className='card-actions justify-end pt-4'>
-        <button type='submit' disabled={saving} className='btn btn-outline btn-primary btn-ghost'>
-          {saving ? "saving..." : "save"}
-        </button>
       </div>
     </form>
   )
 
 
   return (
-    <div className="p-4">
+    <div onBlur={editHandler} className="p-4">
       {form}
     </div>
   )

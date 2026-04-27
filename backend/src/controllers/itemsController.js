@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import Item from "../models/item.js";
 import List from "../models/list.js";
 import HttpError from "../models/httpError.js"

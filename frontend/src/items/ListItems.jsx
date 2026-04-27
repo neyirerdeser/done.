@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react"
 import api from "../lib/axios"
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import toast from 'react-hot-toast'
 
 import { AuthContext } from '../context/auth-context'
@@ -17,6 +17,7 @@ const ListItems = () => {
     const [list, setList] = useState(null)
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(true)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchList = async () => {
@@ -26,7 +27,8 @@ const ListItems = () => {
                 setList(response.data.list)
             } catch (error) {
                 setList(null)
-                if (error.status !== 404) toast.error(error.response.data.message)
+                toast.error(error.response.data.message)
+                // navigate("/")
             }
         }
         fetchList()
@@ -43,7 +45,8 @@ const ListItems = () => {
                 setItems(response.data.items)
             } catch (error) {
                 setItems([])
-                if (error.status !== 404) toast.error(error.response.data.message)
+                toast.error(error.response.data.message)
+                navigate("/")
             } finally {
                 setLoading(false)
             }
