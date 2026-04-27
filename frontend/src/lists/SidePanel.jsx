@@ -40,8 +40,8 @@ const SidePanel = () => {
     // decided against cleanup here for loading speeds
   }, [auth])
 
-  return (
-    <div className='h-full mx-2 bg-base-200'>
+  const side = (
+    <div className='h-full mx-2 bg-base-200 overflow-y-auto'>
       {auth.loggedIn && <NewList />}
       {loading && <Loading />}
       {!loading && !auth.loggedIn && <LoginPromt />}
@@ -52,7 +52,10 @@ const SidePanel = () => {
           list={list}
         />
       ))}
-    </div>
+    </div>)
+
+  return (
+    side
   )
 }
 

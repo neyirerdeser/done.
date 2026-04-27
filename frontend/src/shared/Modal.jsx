@@ -1,10 +1,15 @@
-const Modal = ({ open, onClose, bgStyling="", fgStyling="", children }) => {
+const Modal = ({ open, onClose, bgStyling="", fgStyling="", left=false, children }) => {
+  let translate = "translate-x-full"
+  if(left) translate = "-"+translate
+
   return (
     <div
       onClick={onClose}
       className={`
-        fixed inset-0
-        bg-violet-950/20
+        fixed inset-0 z-10
+        bg-black/40
+        transition-all duration-500
+           ${open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}
         ${bgStyling}
       `}
     >
@@ -14,8 +19,8 @@ const Modal = ({ open, onClose, bgStyling="", fgStyling="", children }) => {
           bg-base-200
           flex flex-col
           h-full
-          transition-all duration-300 delay-150
-          ${open ? "opacity-100 scale-100 ease-in" : "opacity-0 scale-95 ease-out"}
+          transform transition-transform delay-150
+          ${open ? "translate-x-0" : `${translate}`}
           ${fgStyling}
         `}
       >

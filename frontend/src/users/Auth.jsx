@@ -18,6 +18,10 @@ const Auth = () => {
 
     const authSubmitHandler = async (event) => {
         event.preventDefault()
+        if (username.length > 30) {
+            toast.error("Username cannot be longer than 30 characters")
+            return
+        }
         setLoading(true)
         let response
         try {

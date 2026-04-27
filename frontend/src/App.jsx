@@ -8,45 +8,114 @@ import Auth from './users/Auth';
 import MainPage from './shared/MainPage';
 import ListItems from './items/ListItems';
 import Hamburger from './shared/Hamburger';
+import { Menu } from 'lucide-react';
+import ListDrawer from './lists/ListDrawer';
 
 const App = () => {
   const { token, userId, login, logout } = useAuth()
 
-  return (
-    <div className="position-absolute overflow-clip bg-base-200" data-theme="fantasy">
-      <AuthContext.Provider
-        value={{
-          loggedIn: !!token, // we're keeping the loggedIn for convenience
-          token: token,
-          userId: userId,
-          login: login,
-          logout: logout,
-        }}>
-        <Router>
-          <TitleBar />
-          <div className='h-svh flex'>
-            <div className='w-0 invisible md:visible md:w-72'>
-              <div className='mb-6'></div>
-              <SidePanel />
+  const backup = (<div className="position-absolute overflow-clip bg-base-200" data-theme="fantasy">
+    <AuthContext.Provider
+      value={{
+        loggedIn: !!token, // we're keeping the loggedIn for convenience
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout,
+      }}>
+      <Router>
+        <TitleBar />
+        <div className='h-svh flex'>
+          <div className='w-0 invisible md:visible md:w-72'>
+            <div className='mb-6'></div>
+            <SidePanel />
+          </div>
+          <div className='flex bg-primary/20 flex-1 md:rounded-tl-2xl'>
+            <div className='visible md:invisible md:w-0 p-3'>
+              <Hamburger />
             </div>
-            <div className='flex bg-primary/20 flex-1 md:rounded-tl-2xl'>
-              <div className='visible md:invisible md:w-0 p-3'>
-                <Hamburger />
-              </div>
-              <div className='h-full flex-1'>
-                <Routes>
-                  <Route path="/" element={<MainPage />} />
-                  <Route path="/auth" element={<Auth />} />
-                  <Route path="/list/:lid" element={token ? <ListItems /> : <Auth />} />
-                </Routes>
-              </div>
+            <div className='h-full flex-1'>
+              <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/list/:lid" element={token ? <ListItems /> : <Auth />} />
+              </Routes>
             </div>
           </div>
-        </Router>
+        </div>
+      </Router>
 
-      </AuthContext.Provider>
+    </AuthContext.Provider>
+  </div>)
+
+  const routes = (
+    <div className='h-full flex-1'>
+      <div className='h-full pl-6'>
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/list/:lid" element={token ? <ListItems /> : <Auth />} />
+        </Routes>
+      </div>
     </div>
   )
+
+  const drawerbackup = (<div className="position-absolute overflow-clip bg-base-200" data-theme="fantasy">
+    <AuthContext.Provider
+      value={{
+        loggedIn: !!token,
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout,
+      }}>
+      <Router>
+        <TitleBar />
+        <div className='h-svh flex'>
+          <div className='flex bg-[#d0bad1] flex-1 md:rounded-tl-2xl'>
+            <ListDrawer page={routes} sidebar={<SidePanel />} />
+          </div>
+        </div>
+      </Router>
+
+    </AuthContext.Provider>
+  </div>)
+
+
+
+  return (<div className="position-absolute overflow-clip bg-base-200" data-theme="fantasy">
+    <AuthContext.Provider
+      value={{
+        loggedIn: !!token, // we're keeping the loggedIn for convenience
+        token: token,
+        userId: userId,
+        login: login,
+        logout: logout,
+      }}>
+      <Router>
+        <TitleBar />
+        <div className='h-svh flex'>
+          <div className='w-0 invisible md:visible md:w-72'>
+            <div className='mb-6'></div>
+            <SidePanel />
+          </div>
+          <div className='flex bg-[#d0bad1] flex-1 md:rounded-tl-2xl'>
+            <div className='visible md:invisible md:w-0 p-3'>
+              <Hamburger />
+            </div>
+            <div className='h-full flex-1'>
+              <Routes>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/list/:lid" element={token ? <ListItems /> : <Auth />} />
+              </Routes>
+            </div>
+          </div>
+        </div>
+      </Router>
+
+    </AuthContext.Provider>
+  </div>)
 }
 
 export default App

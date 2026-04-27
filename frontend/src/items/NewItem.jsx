@@ -13,6 +13,10 @@ const NewItem = ({ list, setItems }) => {
 
     const itemSubmitHandler = async (event) => {
         event.preventDefault()
+        if (title.length > 40) {
+            toast.error("Task name cannot be longer than 40 characters")
+            return
+        }
         try {
             await api.post("/items", { title, list }, { headers })
             const response = await api.get(`/items/list/${list._id}`, { headers })
@@ -36,7 +40,7 @@ const NewItem = ({ list, setItems }) => {
                                     placeholder="New Item"
                                     value={title}
                                     onChange={(event) => { setTitle(event.target.value) }}
-                                    className='bg-base-200 group-hover:bg-base-100'
+                                    className='bg-base-200 group-hover:bg-base-100 w-full mr-8'
                                 />
                             </label>
                         </div>

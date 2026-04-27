@@ -28,7 +28,6 @@ const ListItems = () => {
             } catch (error) {
                 setList(null)
                 toast.error(error.response.data.message)
-                // navigate("/")
             }
         }
         fetchList()
@@ -61,7 +60,7 @@ const ListItems = () => {
 
 
     return (
-        <div className="h-full">
+        <div className="h-full overflow-y-auto">
             {loading && <Loading />}
             {!loading && <div>
                 {list && <ListTitle list={list} setList={setList} />}
@@ -69,7 +68,7 @@ const ListItems = () => {
                 {items.length == 0 && <EmptyArea textColor={"text-base-100"} />}
                 {items.length > 0 && items.map((item) => (
                     <ItemCard
-                        key={item._id}
+                        key={item}
                         itemId={item}
                         setItems={setItems}
                     />

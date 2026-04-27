@@ -23,7 +23,6 @@ export const getListsByUserId = async (req, res, next) => {
     const userId = req.userData.userId
     const id = req.params.uid
     if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
-    console.log(isValidObjectId(id))
 
     if(userId != id) return next(new HttpError("non-authorized user", 401))
     let user

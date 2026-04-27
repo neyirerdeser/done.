@@ -7,21 +7,28 @@ import toast from 'react-hot-toast'
 import api from '../lib/axios'
 import { AuthContext } from '../context/auth-context'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router'
 
 const NewList = () => {
   const auth = useContext(AuthContext)
   const headers = { Authorization: "Bearer " + auth.token }
   const [title, setTitle] = useState("")
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const listSubmitHandler = async (event) => {
     event.preventDefault()
+    if (title.length > 20) {
+      toast.error("List name cannot be longer than 20 characters")
+      return
+    }
     try {
-      await api.post("/lists",
+      const listRes = await api.post("/lists",
         { title, creator: auth.userId }, { headers })
       const response = await api.get(`/lists/user/${auth.userId}`, { headers })
       setTitle("")
       dispatch(setLists(response.data.lists))
+      navigate(`/list/${listRes.data.list._id}`)
     } catch (error) {
       toast.error(error.response.data.message)
     }
