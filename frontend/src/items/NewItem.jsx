@@ -17,6 +17,11 @@ const NewItem = ({ list, setItems }) => {
             toast.error("Task name cannot be longer than 40 characters")
             return
         }
+        if (title.trim() === "") {
+            toast.error("Title cannot be left empty")
+            setTitle("")
+            return
+        }
         try {
             await api.post("/items", { title, list }, { headers })
             const response = await api.get(`/items/list/${list._id}`, { headers })

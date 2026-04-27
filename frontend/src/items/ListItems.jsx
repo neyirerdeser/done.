@@ -60,6 +60,7 @@ const ListItems = () => {
 
 
     return (
+        <div className="h-full w-full justify-items-center">
         <div className="h-full overflow-y-auto">
             {loading && <Loading />}
             {!loading && <div>
@@ -74,6 +75,7 @@ const ListItems = () => {
                     />
                 ))}
             </div>}
+        </div>
         </div>
     )
 }

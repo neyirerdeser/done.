@@ -2,7 +2,7 @@ import toast from 'react-hot-toast'
 import { Trash2 } from 'lucide-react'
 import Icon from '../shared/Icon'
 import api from '../lib/axios'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useContext } from 'react'
 import { AuthContext } from '../context/auth-context'
 import { useDispatch } from 'react-redux'
@@ -15,6 +15,7 @@ const ListCard = ({ list }) => {
   const auth = useContext(AuthContext)
   const headers = { Authorization: "Bearer " + auth.token }
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const deleteHandler = async (event, id) => {
     event.preventDefault()
@@ -23,6 +24,7 @@ const ListCard = ({ list }) => {
       await api.delete(`/lists/${id}`, { headers })
       const response = await api.get(`/lists/user/${auth.userId}`, { headers })
       dispatch(setLists(response.data.lists))
+      navigate("/")
     } catch (error) {
       toast.error(error.response.data.message)
     }

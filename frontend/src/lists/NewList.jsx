@@ -22,6 +22,11 @@ const NewList = () => {
       toast.error("List name cannot be longer than 20 characters")
       return
     }
+    if (title.trim() === "") {
+      toast.error("Title cannot be left empty")
+      setTitle("")
+      return
+    }
     try {
       const listRes = await api.post("/lists",
         { title, creator: auth.userId }, { headers })

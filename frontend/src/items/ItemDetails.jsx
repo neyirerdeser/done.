@@ -16,8 +16,14 @@ const ItemDetails = ({ item, setItem }) => {
   const editHandler = async (event) => {
     event.preventDefault()
 
-    if (title.length > 40) {
-      toast.error("Task name cannot be longer than 40 characters")
+    if (title.length > 20) {
+      toast.error("Task name cannot be longer than 20 characters")
+      // setTitle(item.title)
+      return
+    }
+    if (title.trim() === "") {
+      toast.error("Title cannot be left empty")
+      setTitle(item.title)
       return
     }
 
@@ -44,22 +50,21 @@ const ItemDetails = ({ item, setItem }) => {
   const form = (
     <form onSubmit={editHandler} className='w-auto'>
       <div className='form-control'>
-        <div className="flex items-center bg-base-100 rounded-lg">
-          <input
-            className="checkbox border-neutral/80 rounded-lg flex-0 bg-base-100 ml-3.5"
+          <label className="input flex items-center bg-base-100 rounded-lg p-4">
+            <input
+            className="checkbox size-5 flex-0 border-neutral/80 rounded-lg flex-0 bg-base-100 mr-4"
             type="checkbox"
             checked={completed}
             onChange={() => { setCompleted(!completed) }}
           />
-          <label className="input flex flex-1 items-center">
             <input
+              className="flex-1"
               type="text"
               placeholder={title}
               value={title}
               onChange={(event) => { setTitle(event.target.value) }}
             />
           </label>
-        </div>
         <div className='py-1'></div>
         <label className="input flex items-center gap-4">
           <CalendarDays className="size-5 text-neutral/80 mr-0.5" />
@@ -70,13 +75,13 @@ const ItemDetails = ({ item, setItem }) => {
           />
         </label>
         <div className='py-1'></div>
-        <label className="textarea flex  gap-4">
+        <label className="textarea flex gap-4">
           <StickyNote className="flex-0 size-5 text-neutral/80 mr-0.5 mt-1" />
           <textarea
             placeholder={note || "Add Note"}
             value={note}
             onChange={(event) => { setNote(event.target.value) }}
-            className="flex-1"
+            className="flex-1 min-h-7"
           />
         </label>
       </div>

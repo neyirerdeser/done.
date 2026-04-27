@@ -12,6 +12,11 @@ const ListTitle = ({ list, setList }) => {
 
     const titleEditHandler = async (event) => {
         event.preventDefault()
+        if (title.trim() === "") {
+            toast.error("title cannot be left empty")
+            setTitle(list.title)
+            return
+        }
         try {
             const response = await api.patch(`/lists/${list._id}`,
                 { title }, { headers }
@@ -30,7 +35,7 @@ const ListTitle = ({ list, setList }) => {
                         <label className="flex items-center">
                             <input
                                 type="text"
-                                placeholder="New Item"
+                                placeholder="enter list title..."
                                 value={title}
                                 onChange={(event) => { setTitle(event.target.value) }}
                                 onBlur={titleEditHandler}
