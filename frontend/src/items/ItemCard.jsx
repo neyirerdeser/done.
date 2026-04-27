@@ -1,10 +1,12 @@
-import { Trash2, X } from "lucide-react"
-import api from "../lib/axios"
 import { useState, useEffect, useContext } from "react"
 import toast from 'react-hot-toast'
+import { Trash2, X } from "lucide-react"
+
+import api from "../lib/axios"
+import { AuthContext } from '../context/auth-context'
+
 import ItemDetails from "./ItemDetails"
 import Modal from "../shared/Modal"
-import { AuthContext } from '../context/auth-context'
 
 const ItemCard = ({ itemId, setItems }) => {
   const auth = useContext(AuthContext)

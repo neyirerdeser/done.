@@ -1,5 +1,6 @@
-import { Menu, X } from 'lucide-react'
 import { useState } from 'react'
+import { Menu, X } from 'lucide-react'
+
 import SidePanel from '../lists/SidePanel'
 import Modal from './Modal'
 

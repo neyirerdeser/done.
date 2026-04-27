@@ -1,10 +1,9 @@
-import { PlusIcon } from 'lucide-react'
 import { useState, useContext } from 'react'
 import toast from 'react-hot-toast'
+import { PlusIcon } from 'lucide-react'
+
 import api from '../lib/axios'
-
 import { AuthContext } from '../context/auth-context'
-
 
 const NewItem = ({ list, setItems }) => {
     const auth = useContext(AuthContext)

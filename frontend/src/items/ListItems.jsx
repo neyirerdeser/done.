@@ -1,9 +1,10 @@
 import { useEffect, useState, useContext } from "react"
-import api from "../lib/axios"
 import { useNavigate, useParams } from "react-router"
 import toast from 'react-hot-toast'
 
+import api from "../lib/axios"
 import { AuthContext } from '../context/auth-context'
+
 import Loading from "../shared/Loading"
 import ItemCard from "../items/ItemCard"
 import NewItem from "./NewItem"
@@ -57,25 +58,23 @@ const ListItems = () => {
 
     }, [list])
 
-
-
     return (
         <div className="h-full w-full justify-items-center">
-        <div className="h-full overflow-y-auto">
-            {loading && <Loading />}
-            {!loading && <div>
-                {list && <ListTitle list={list} setList={setList} />}
-                <NewItem setItems={setItems} list={list} />
-                {items.length == 0 && <EmptyArea textColor={"text-base-100"} />}
-                {items.length > 0 && items.map((item) => (
-                    <ItemCard
-                        key={item}
-                        itemId={item}
-                        setItems={setItems}
-                    />
-                ))}
-            </div>}
-        </div>
+            <div className="h-full overflow-y-auto">
+                {loading && <Loading />}
+                {!loading && <div>
+                    {list && <ListTitle list={list} setList={setList} />}
+                    <NewItem setItems={setItems} list={list} />
+                    {items.length == 0 && <EmptyArea textColor={"text-base-100"} />}
+                    {items.length > 0 && items.map((item) => (
+                        <ItemCard
+                            key={item}
+                            itemId={item}
+                            setItems={setItems}
+                        />
+                    ))}
+                </div>}
+            </div>
         </div>
     )
 }

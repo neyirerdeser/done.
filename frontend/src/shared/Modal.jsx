@@ -1,6 +1,6 @@
-const Modal = ({ open, onClose, bgStyling="", fgStyling="", left=false, children }) => {
+const Modal = ({ open, onClose, bgStyling = "", fgStyling = "", left = false, children }) => {
   let translate = "translate-x-full"
-  if(left) translate = "-"+translate
+  if (left) translate = "-" + translate
 
   return (
     <div

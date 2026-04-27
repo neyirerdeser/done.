@@ -1,8 +1,8 @@
-import { CalendarDays, StickyNote } from "lucide-react"
-import { useState } from "react"
+import { useState, useContext } from "react"
 import toast from "react-hot-toast"
+import { CalendarDays, StickyNote } from "lucide-react"
+
 import api from "../lib/axios"
-import { useContext } from "react"
 import { AuthContext } from '../context/auth-context'
 
 const ItemDetails = ({ item, setItem }) => {
@@ -18,7 +18,6 @@ const ItemDetails = ({ item, setItem }) => {
 
     if (title.length > 20) {
       toast.error("Task name cannot be longer than 20 characters")
-      // setTitle(item.title)
       return
     }
     if (title.trim() === "") {
@@ -50,21 +49,21 @@ const ItemDetails = ({ item, setItem }) => {
   const form = (
     <form onSubmit={editHandler} className='w-auto'>
       <div className='form-control'>
-          <label className="input flex items-center bg-base-100 rounded-lg p-4">
-            <input
+        <label className="input flex items-center bg-base-100 rounded-lg p-4">
+          <input
             className="checkbox size-5 flex-0 border-neutral/80 rounded-lg flex-0 bg-base-100 mr-4"
             type="checkbox"
             checked={completed}
             onChange={() => { setCompleted(!completed) }}
           />
-            <input
-              className="flex-1"
-              type="text"
-              placeholder={title}
-              value={title}
-              onChange={(event) => { setTitle(event.target.value) }}
-            />
-          </label>
+          <input
+            className="flex-1"
+            type="text"
+            placeholder={title}
+            value={title}
+            onChange={(event) => { setTitle(event.target.value) }}
+          />
+        </label>
         <div className='py-1'></div>
         <label className="input flex items-center gap-4">
           <CalendarDays className="size-5 text-neutral/80 mr-0.5" />

@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react'
-import toast from 'react-hot-toast'
-
-import { AuthContext } from '../context/auth-context.js'
-import api from '../lib/axios.js'
 import { useNavigate } from 'react-router'
+import toast from 'react-hot-toast'
 import { KeyRound, UserRound } from 'lucide-react'
+
+import api from '../lib/axios.js'
+import { AuthContext } from '../context/auth-context.js'
 
 
 const Auth = () => {

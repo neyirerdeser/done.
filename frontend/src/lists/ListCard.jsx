@@ -1,15 +1,14 @@
-import toast from 'react-hot-toast'
-import { Trash2 } from 'lucide-react'
-import Icon from '../shared/Icon'
-import api from '../lib/axios'
-import { Link, useNavigate } from 'react-router'
 import { useContext } from 'react'
-import { AuthContext } from '../context/auth-context'
+import { Link, useNavigate } from 'react-router'
+import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
+import { Trash2 } from 'lucide-react'
+
+import { AuthContext } from '../context/auth-context'
+import api from '../lib/axios'
 import { setLists } from '../lib/listSlice'
 
-
-// TODO fix/remove backgounrd colouring when selected
+import Icon from '../shared/Icon'
 
 const ListCard = ({ list }) => {
   const auth = useContext(AuthContext)

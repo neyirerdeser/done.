@@ -3,6 +3,7 @@ import toast from 'react-hot-toast'
 
 import api from '../lib/axios'
 import { AuthContext } from '../context/auth-context';
+
 import AuthButton from '../users/AuthButton';
 import done from '../assests/done-purple.png'
 
@@ -27,14 +28,12 @@ const TitleBar = () => {
         getUsername()
     }, [auth])
 
-
     return (
         <div className='w-screen h-20 text-primary py-4 flex justify-between'>
             <AuthButton />
             <div className=' h-full flex px-8 '>
                 <div className='place-self-center text-xl pr-4 pt-5 invisible md:visible'>{username}, time to get it</div>
                 <img src={done} className='pt-1 text-primary' />
-                {/* <div className='text-5xl font-bold font-special'>done.</div> */}
             </div>
         </div>
     )

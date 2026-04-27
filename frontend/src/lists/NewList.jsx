@@ -1,13 +1,12 @@
-import { PlusIcon } from 'lucide-react'
 import { useContext, useState } from 'react'
-import { setLists } from '../lib/listSlice'
-
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router'
+import { PlusIcon } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 import api from '../lib/axios'
+import { setLists } from '../lib/listSlice'
 import { AuthContext } from '../context/auth-context'
-import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router'
 
 const NewList = () => {
   const auth = useContext(AuthContext)

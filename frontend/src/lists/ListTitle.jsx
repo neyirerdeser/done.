@@ -1,7 +1,7 @@
 import { useState, useContext } from "react"
-import api from "../lib/axios"
 import toast from 'react-hot-toast'
 
+import api from "../lib/axios"
 import { AuthContext } from '../context/auth-context'
 
 const ListTitle = ({ list, setList }) => {

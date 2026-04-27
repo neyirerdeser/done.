@@ -1,15 +1,16 @@
 import { useContext, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 
 import api from '../lib/axios'
-import Loading from '../shared/Loading'
+import { setLists } from '../lib/listSlice'
 import { AuthContext } from '../context/auth-context'
+
+import Loading from '../shared/Loading'
+import EmptyArea from '../shared/EmptyArea'
 import LoginPromt from '../users/LoginPromt'
 import ListCard from './ListCard'
 import NewList from './NewList'
-import EmptyArea from '../shared/EmptyArea'
-import { useDispatch, useSelector } from 'react-redux'
-import { setLists } from '../lib/listSlice'
 
 
 const SidePanel = () => {
@@ -40,7 +41,7 @@ const SidePanel = () => {
     // decided against cleanup here for loading speeds
   }, [auth])
 
-  const side = (
+  return (
     <div className='h-full mx-2 bg-base-200 overflow-y-auto'>
       {auth.loggedIn && <NewList />}
       {loading && <Loading />}
@@ -52,10 +53,7 @@ const SidePanel = () => {
           list={list}
         />
       ))}
-    </div>)
-
-  return (
-    side
+    </div>
   )
 }
 
