@@ -1,65 +1,107 @@
 import request from "supertest"
-import app from "../src/server.js"
+
+import User from "../src/models/user.js"
+import { getUserById, login, signup } from "../src/controllers/usersController.js"
 
 const username = "testUser"
 const password = "test123"
-const userId = "69e6c7cef89a0dd817cd9e65"
-const fakeUserId = "69e6c7cef89a0dd817cd9e66"
 
-describe("Retrieving existing users", () => {
-    describe("given valid user id", () => {
-        it("GET /user/:uid should return user", async () => {
-            const response = await request(app).get(`/api/user/${userId}`)
-            expect(response.status).toBe(200)
-            expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
-        })
-    })
-    describe("given invalid user id", () => {
-        it("GET /user/:uid should return a 404 error", async () => {
-            const response = await request(app).get(`/api/user/${fakeUserId}`)
-            expect(response.status).toBe(404)
-        })
-    })
+const mockUserId = "69e6c7cef89a0dd817cd9e65"
+const wrongUserId = "69e6c7cef89a0dd817cd9e66"
+const invaliUserdId = "123abc"
+
+process.env.PRIVATE_KEY = 'mock-private-key'
+
+const mockUser = new User({
+    _id: mockUserId,
+    lists: [],
+    username,
+    password
 })
 
-describe("Signing up a new user", () => {
-    // describe("Given valid username", () => {
-    //     it("POST /users/signup should return new users id and token", async () => {
-    // // i dont want to clutter the db with users from testing
-    // // putting it aside till I learn mock db
-    //     })
-    // })
-    describe("Given invalid (already existing) username", () => {
-        it("POST /users/signup should return a 422 error", async () => {
-            const response = await request(app).post("/api/users/signup").send({ username, password })
-            expect(response.status).toBe(422)
-        })
-    })
-})
+User.prototype.save = jest.fn().mockImplementation(() => { })
 
-describe("Logging in with existing user", () => {
-    describe("Given valid username and password", () => {
-        it("POST /users/login should return signed users id and token", async () => {
-            const response = await request(app).post("/api/users/login").send({ username, password })
-            expect(response.status).toBe(200)
+const res = { status: jest.fn().mockReturnThis(), json: jest.fn().mockReturnThis() }
+const next = jest.fn()
+
+describe("UsersControllers", () => {
+    describe("getUserById : GET /user/:uid", () => {
+        it("given valid user id, should return user", async () => {
+            User.findById = jest.fn().mockReturnValueOnce(mockUser)
+            const req = { params: { uid: mockUserId } }
+            await getUserById(req, res)
+            expect(res.json).toHaveBeenCalledWith({ user: mockUser })
+        })
+        it("given invalid user id, should return a 404 error", async () => {
+            User.findById = jest.fn().mockReturnValueOnce(null)
+            const req = { params: { uid: wrongUserId } }
+            await getUserById(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 404 }))
+        })
+        it("given invalid id type, should return a 400 error", async () => {
+            const req = { params: { uid: invaliUserdId } }
+            await getUserById(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 400 }))
         })
     })
-    describe("Given invalid username", () => {
-        it("POST /users/login should return a 404 error", async () => {
-            const response = await request(app).post("/api/users/login").send({
-                username: "non-existing username",
-                password
+    describe("signup : POST /users/signup", () => {
+        it("given valid username, should return new users id and token", async () => {
+            const req = {
+                body: {
+                    username: "username",
+                    password: "secret123"
+                }
+            }
+            await signup(req, res)
+            expect(User.prototype.save).toHaveBeenCalled()
+            expect(res.status).toHaveBeenCalledWith(201)
+        })
+        it("given invalid (already existing) username, should return a 422 error", async () => {
+            User.prototype.save = jest.fn().mockImplementation(() => {
+                throw new Error("duplicate key error")
             })
-            expect(response.status).toBe(404)
+            const req = {
+                body: {
+                    username,
+                    password: "secret123"
+                }
+            }
+            await signup(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 422 }))
         })
     })
-    describe("Given invalid password", () => {
-        it("POST /users/login should return a 403 error", async () => {
-            const response = await request(app).post("/api/users/login").send({
-                username,
-                password: "wrong password"
-            })
-            expect(response.status).toBe(403)
+    describe("login : POST /users/login", () => {
+        it("given valid username and password : should return signed users id and token", async () => {
+            User.findOne = jest.fn().mockReturnValueOnce(mockUser)
+            const req = {
+                body: {
+                    username,
+                    password
+                }
+            }
+            await login(req, res)
+        })
+        it("given invalid username, should return a 404 error", async () => {
+            User.findOne = jest.fn().mockReturnValueOnce(null)
+            const req = {
+                body: {
+                    username: "noNExistantUSernaME",
+                    password
+                }
+            }
+            await login(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 404 }))
+        })
+        it("given invalid password, should return a 403 error", async () => {
+            User.findOne = jest.fn().mockReturnValueOnce(mockUser)
+            const req = {
+                body: {
+                    username,
+                    password: "wrongPassword"
+                }
+            }
+            await login(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 403 }))
         })
     })
 })

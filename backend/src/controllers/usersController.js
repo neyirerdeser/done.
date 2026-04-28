@@ -30,7 +30,7 @@ export const signup = async (req, res, next) => {
         return next(new HttpError(error.message, 500))
     }
 
-    // TODO : adding password encryption == bcrypt is installed
+    // TODO : adding password encryption ==> bcrypt is installed
 
     let token
     try {
@@ -59,7 +59,6 @@ export const login = async (req, res, next) => {
 
     // TODO : if added encryption, must decrypt here
     if (user.password != password) return next(new HttpError("invalid credentials", 403))
-    // 401: non-authorized  403: no permission (non-authenticated)
 
     let token
     try {

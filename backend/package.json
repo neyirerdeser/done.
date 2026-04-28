@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest --detectOpenHandles --forceExit",
+    "test": "npx jest --verbose --coverage --detectOpenHandles --forceExit",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },

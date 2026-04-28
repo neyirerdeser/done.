@@ -27,13 +27,13 @@ export const getListsByUserId = async (req, res, next) => {
     if(userId != id) return next(new HttpError("non-authorized user", 401))
     let user
     try {
-        user = await User.findById(id).populate("lists")
+        user = await User.findById(id)
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
     if (!user)
         return next(new HttpError("no lists exist for such user", 404))
-
+    await user.populate("lists")
     res.json({ lists: user.lists })
 }
 
@@ -90,13 +90,13 @@ export const updateListById = async (req, res, next) => {
     if (!list)
         return next(new HttpError("no such list", 404))
 
-    if (list.creator.toString() !== userId)
+    if (list.creator.toString() != userId)
         return next(new HttpError("non-authorized user", 401))
 
     list.title = title || list.title
     list.iconName = iconName || list.iconName
     try {
-        list = await list.save()
+        await list.save()
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
@@ -112,14 +112,15 @@ export const deleteListById = async (req, res, next) => {
     if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let list
     try {
-        list = await List.findById(id).populate("creator")
+        list = await List.findById(id)
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
     if (!list)
         return next(new HttpError("no such list", 404))
+    await list.populate("creator")
 
-    if (list.creator.id.toString() !== userId)
+    if (list.creator.id.toString() != userId)
         return next(new HttpError("non-authorized user", 401))
 
     try {

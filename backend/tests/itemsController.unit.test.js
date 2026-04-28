@@ -7,15 +7,14 @@ import { createItem, deleteItemById, getItemById, getItemsByListId, updateItemBy
 
 const mockListId = "69e6c7e4f89a0dd817cd9e66"
 const wrongListId = "69e6c7e4f89a0dd817cd9e65"
-const emptyListId = "69e7bd953f67d334bb0e07b3"
 
 const mockItemId = "69e7afd60764548ad02d48bd"
 const wrongItemId = "69e7afd60764548ad02d47bd"
 
-const invalidId = "123abc"
-
 const mockUserId = "69e6c7cef89a0dd817cd9e65"
 const wrongUserId = "69e78acd5c1b55dbb8928a1d"
+
+const invalidId = "123abc"
 
 const mockList = new List({
     _id: mockListId,
@@ -23,6 +22,7 @@ const mockList = new List({
     items: { pull: jest.fn() }, // make it pull-able
     creator: mockUserId
 })
+
 const mockItem = new Item({
     _id: mockItemId,
     title: "item",
@@ -31,13 +31,7 @@ const mockItem = new Item({
         completed: false
     }
 })
-const wrongList = {
-    title: "list",
-    items: [],
-    creator: wrongUserId
-}
-const res = { status: jest.fn().mockReturnThis(), json: jest.fn().mockReturnThis() }
-const next = jest.fn()
+
 List.prototype.save = jest.fn().mockImplementation(() => { })
 Item.prototype.save = jest.fn().mockImplementation(() => { })
 Item.prototype.deleteOne = jest.fn().mockImplementation(() => { })
@@ -46,6 +40,9 @@ Item.prototype.populate = jest.fn().mockImplementation(
         this.list = mockList
         return Promise.resolve(this)
     })
+
+const res = { status: jest.fn().mockReturnThis(), json: jest.fn().mockReturnThis() }
+const next = jest.fn()
 const mockSession = {
     startTransaction: jest.fn(),
     commitTransaction: jest.fn(),
@@ -68,6 +65,7 @@ describe("ItemsController", () => {
         it("given invalid id type, should return a 400 error", async () => {
             const req = { params: { iid: invalidId } }
             await getItemById(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 400 }))
         })
     })
     describe("getItemsByListId : GET /items/user/:lid", () => {
@@ -92,33 +90,27 @@ describe("ItemsController", () => {
     describe("createItem : POST /items", () => {
         it("given valid content and user, should create a new item and add it to user items", async () => {
             List.findById = jest.fn().mockReturnValueOnce(mockList)
-
             const updateSpy = jest.spyOn(List.prototype, "updateOne").mockResolvedValue(true)
             jest.spyOn(mongoose, 'startSession').mockResolvedValue(mockSession)
-
             const req = {
                 body: {
                     title: "title",
                     list: mockListId,
-
                 },
                 userData: { userId: mockUserId }
             }
             await createItem(req, res, next)
-
             expect(mongoose.startSession).toHaveBeenCalled()
             expect(mockSession.startTransaction).toHaveBeenCalled()
             expect(Item.prototype.save).toHaveBeenCalled()
             expect(updateSpy).toHaveBeenCalled()
             expect(mockSession.commitTransaction).toHaveBeenCalled()
-
             expect(res.status).toHaveBeenCalledWith(201)
-            expect(res.json).toHaveBeenCalledWith(expect.objectContaining(
-                {
-                    item: expect.objectContaining(
-                        { title: "title" })
-                }))
-
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                item: expect.objectContaining({
+                    title: "title"
+                })
+            }))
         })
         it("given invalid list, should return a 404 error", async () => {
             List.findById = jest.fn().mockReturnValueOnce(null)
@@ -133,14 +125,14 @@ describe("ItemsController", () => {
             expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 404 }))
         })
         it("given wrong user, should return a 401 error", async () => {
-            List.findById = jest.fn().mockReturnValueOnce(wrongList)
+            List.findById = jest.fn().mockReturnValueOnce(mockList)
             const req = {
                 body: {
                     title: "title",
-                    list: wrongListId,
+                    list: mockList,
 
                 },
-                userData: { userId: mockUserId }
+                userData: { userId: wrongUserId }
             }
             await createItem(req, res, next)
             expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 401 }))
@@ -154,17 +146,14 @@ describe("ItemsController", () => {
                 userData: { userId: mockUserId }
             }
             Item.findById = jest.fn().mockReturnValue(mockItem)
-
             await updateItemById(req, res)
-            expect(res.json).toHaveBeenCalledWith(expect.objectContaining(
-                {
-                    item: expect.objectContaining(
-                        {
-                            detail: expect.objectContaining(
-                                { completed: true })
-                        })
-                }))
-
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+                item: expect.objectContaining({
+                    detail: expect.objectContaining({
+                        completed: true
+                    })
+                })
+            }))
         })
         it("given invalid item id, should return a 404 error", async () => {
             const req = {
@@ -174,7 +163,6 @@ describe("ItemsController", () => {
             }
             Item.findById = jest.fn().mockReturnValue(null)
             await updateItemById(req, res, next)
-
             expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 404 }))
         })
         it("given invalid id type, should return a 400 error", async () => {
@@ -194,10 +182,8 @@ describe("ItemsController", () => {
             }
             Item.findById = jest.fn().mockReturnValue(mockItem)
             await updateItemById(req, res, next)
-
             expect(Item.findById).toHaveBeenCalled()
             expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 401 }))
-
         })
     })
     describe("deleteItemById: DELETE /items/:iid", () => {
@@ -209,7 +195,6 @@ describe("ItemsController", () => {
             Item.findById = jest.fn().mockReturnValue(mockItem)
             jest.spyOn(mongoose, 'startSession').mockResolvedValue(mockSession)
             await deleteItemById(req, res, next)
-
             expect(mongoose.startSession).toHaveBeenCalled()
             expect(mockSession.startTransaction).toHaveBeenCalled()
             expect(List.prototype.save).toHaveBeenCalled()
@@ -240,10 +225,8 @@ describe("ItemsController", () => {
                 userData: { userId: wrongUserId }
             }
             Item.findById = jest.fn().mockReturnValue(mockItem)
-
             await deleteItemById(req, res, next)
             expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 401 }))
         })
     })
-
 })

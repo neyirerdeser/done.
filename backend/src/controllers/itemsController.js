@@ -57,7 +57,7 @@ export const updateItemById = async (req, res, next) => {
     }
     if (!item) return next(new HttpError("no such item", 404))
     await item.populate("list")
-    if (item.list.creator.toString() !== user)
+    if (item.list.creator.toString() != user)
         return next(new HttpError("non-authorized user", 401))
 
     item.title = title || item.title
@@ -86,7 +86,7 @@ export const deleteItemById = async (req, res, next) => {
     }
     if (!item) return next(new HttpError("no such item", 404))
     await item.populate("list")
-    if (item.list.creator.toString() !== user)
+    if (item.list.creator.toString() != user)
         return next(new HttpError("non-authorized user", 401))
 
     try {
