@@ -1,4 +1,4 @@
-import { useState, useContext } from "react"
+import { useState, useEffect, useContext } from "react"
 import toast from "react-hot-toast"
 import { CalendarDays, StickyNote } from "lucide-react"
 
@@ -12,6 +12,10 @@ const ItemDetails = ({ item, setItem }) => {
   const [note, setNote] = useState(item.detail.note || "")
   const [dueDate, setDueDate] = useState(item.detail.dueDate ? item.detail.dueDate.slice(0, 10) : "")
   const [completed, setCompleted] = useState(item.detail.completed)
+
+  useEffect(() => {
+    setCompleted(item.detail.completed)
+  }, [item])
 
   const editHandler = async (event) => {
     event.preventDefault()
@@ -37,6 +41,7 @@ const ItemDetails = ({ item, setItem }) => {
     if (anyChange) {
       try {
         const response = await api.patch(`/items/${item._id}`, { title, dueDate, completed, note }, { headers })
+        console.log(response.data.item)
         setItem(response.data.item)
         toast.success("task updated")
       } catch (error) {
@@ -88,8 +93,6 @@ const ItemDetails = ({ item, setItem }) => {
       </div>
     </form>
   )
-
-
   return (
     <div onBlur={editHandler} className="p-4">
       {form}

@@ -59,21 +59,26 @@ const ListItems = () => {
     }, [list])
 
     return (
-        <div className="h-full w-full justify-items-center">
-            <div className="h-full overflow-y-auto">
-                {loading && <Loading />}
-                {!loading && <div>
-                    {list && <ListTitle list={list} setList={setList} />}
-                    <NewItem setItems={setItems} list={list} />
-                    {items.length == 0 && <EmptyArea textColor={"text-base-100"} />}
-                    {items.length > 0 && items.map((item) => (
-                        <ItemCard
-                            key={item}
-                            itemId={item}
-                            setItems={setItems}
-                        />
-                    ))}
-                </div>}
+        <div className="h-full w-full pb-48 justify-items-center">
+            <div className="w-1/2 -ml-6">{!loading && list && <ListTitle list={list} setList={setList} />}</div>
+            <div className="h-full w-full justify-items-center overflow-y-auto ">
+                <div className="w-1/2">
+                    {loading && <Loading />}
+                    {!loading && <div>
+
+                        <div>
+                            <NewItem setItems={setItems} list={list} />
+                            {items.length == 0 && <EmptyArea textColor={"text-base-100"} />}
+                            {items.length > 0 && items.map((item) => (
+                                <ItemCard
+                                    key={item}
+                                    itemId={item}
+                                    setItems={setItems}
+                                />
+                            ))}
+                        </div>
+                    </div>}
+                </div>
             </div>
         </div>
     )

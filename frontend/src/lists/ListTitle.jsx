@@ -3,10 +3,14 @@ import toast from 'react-hot-toast'
 
 import api from "../lib/axios"
 import { AuthContext } from '../context/auth-context'
+import { useDispatch, useSelector } from "react-redux"
+import { setLists } from "../lib/listSlice"
 
 const ListTitle = ({ list, setList }) => {
     const auth = useContext(AuthContext)
     const headers = { Authorization: "Bearer " + auth.token }
+    const lists = useSelector((state) => state.lists)
+    const dispatch = useDispatch()
 
     const [title, setTitle] = useState(list.title)
 
@@ -22,6 +26,9 @@ const ListTitle = ({ list, setList }) => {
                 { title }, { headers }
             )
             setList(response.data.list)
+            dispatch(setLists(lists.map(l => {
+                return l._id === list._id ? {...l, title}: l
+            })))
         } catch (error) {
             toast.error(error.response.data.message)
         }
@@ -39,7 +46,7 @@ const ListTitle = ({ list, setList }) => {
                                 value={title}
                                 onChange={(event) => { setTitle(event.target.value) }}
                                 onBlur={titleEditHandler}
-                                className='bg-transparent'
+                                className='bg-transparent w-full'
                             />
                         </label>
                     </div>

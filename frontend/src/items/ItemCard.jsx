@@ -12,7 +12,6 @@ const ItemCard = ({ itemId, setItems }) => {
   const auth = useContext(AuthContext)
   const headers = { Authorization: "Bearer " + auth.token }
   const [item, setItem] = useState(null)
-  const [completed, setCompleted] = useState(false)
   const [detailsOpen, setDetailsOpen] = useState(false)
 
   useEffect(() => {
@@ -20,7 +19,6 @@ const ItemCard = ({ itemId, setItems }) => {
       try {
         const response = await api.get(`/items/${itemId}`, { headers })
         setItem(response.data.item)
-        setCompleted(response.data.item.detail.completed)
       } catch (error) {
         setItem(null)
         toast.error(error.response.data.message)
@@ -30,10 +28,11 @@ const ItemCard = ({ itemId, setItems }) => {
     return () => {
       setItem(null)
     }
-  }, [itemId, completed])
+  }, [itemId])
 
   const deleteHandler = async (event) => {
     event.preventDefault()
+    setSaving(true)
     setDetailsOpen(false)
     if (!window.confirm("Are you sure you'd like to delete this item? This cannot be undone.")) return
     try {
@@ -42,20 +41,22 @@ const ItemCard = ({ itemId, setItems }) => {
       setItems(response.data.items)
     } catch (error) {
       toast.error(error.response.data.message)
+    } finally {
+      setSaving(false)
     }
-
   }
 
   const completeHandler = async (event) => {
     event.preventDefault()
+    const completed = item.detail.completed
     try {
       const response = await api.patch(`/items/${itemId}`, { completed: !completed }, { headers })
-      setCompleted(!completed)
       setItem(response.data.item)
     } catch (error) {
       toast.error(error.response.data.message)
     }
   }
+
   return (
     <div className="py-1 mr-1">
       {item &&
@@ -64,7 +65,7 @@ const ItemCard = ({ itemId, setItems }) => {
             <input
               className="checkbox checkbox-sm border-neutral/80 bg-base-200 hover:bg-base-100 ml-1"
               type="checkbox"
-              checked={completed}
+              checked={item.detail.completed}
               onChange={completeHandler}
             />
             <div onClick={() => { setDetailsOpen(true) }} className={`flex-1 mx-2`}>

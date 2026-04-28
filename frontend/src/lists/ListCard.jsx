@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { Trash2 } from 'lucide-react'
@@ -15,6 +15,7 @@ const ListCard = ({ list }) => {
   const headers = { Authorization: "Bearer " + auth.token }
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const viewingList = window.location.href.split("list/")[1]
 
   const deleteHandler = async (event, id) => {
     event.preventDefault()
@@ -23,7 +24,8 @@ const ListCard = ({ list }) => {
       await api.delete(`/lists/${id}`, { headers })
       const response = await api.get(`/lists/user/${auth.userId}`, { headers })
       dispatch(setLists(response.data.lists))
-      navigate("/")
+      if (id == viewingList)
+        navigate("/")
     } catch (error) {
       toast.error(error.response.data.message)
     }

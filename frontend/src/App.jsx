@@ -13,7 +13,8 @@ import ListItems from './items/ListItems';
 const App = () => {
   const { token, userId, login, logout } = useAuth()
 
-  return (<div className="position-absolute overflow-clip bg-base-200" data-theme="fantasy">
+  return (
+  <div className="position-absolute h-svh overflow-clip bg-base-200" data-theme="fantasy">
     <AuthContext.Provider
       value={{
         loggedIn: !!token, // we're keeping the loggedIn for convenience
@@ -24,7 +25,7 @@ const App = () => {
       }}>
       <Router>
         <TitleBar />
-        <div className='h-svh flex'>
+        <div className='h-full flex'>
           <div className='w-0 invisible md:visible md:w-72'>
             <div className='mb-6'></div>
             <SidePanel />
