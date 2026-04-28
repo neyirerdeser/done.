@@ -2,8 +2,8 @@ import { useEffect, useState, useContext } from "react"
 import { useNavigate, useParams } from "react-router"
 import toast from 'react-hot-toast'
 
-import api from "../lib/axios"
-import { AuthContext } from '../context/auth-context'
+import api from "../../lib/axios"
+import { AuthContext } from '../../context/auth-context'
 
 import Loading from "../shared/Loading"
 import ItemCard from "../items/ItemCard"

@@ -3,12 +3,12 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router'
 import { useAuth } from "./hooks/auth-hook"
 import { AuthContext } from "./context/auth-context"
 
-import TitleBar from './shared/TitleBar';
-import MainPage from './shared/MainPage';
-import Hamburger from './shared/Hamburger';
-import Auth from './users/Auth';
-import SidePanel from './lists/SidePanel';
-import ListItems from './items/ListItems';
+import TitleBar from './components/shared/TitleBar';
+import MainPage from './components/shared/MainPage';
+import Hamburger from './components/shared/Hamburger';
+import Auth from './components/users/Auth';
+import SidePanel from './components/lists/SidePanel';
+import ListItems from './components/items/ListItems';
 
 const App = () => {
   const { token, userId, login, logout } = useAuth()

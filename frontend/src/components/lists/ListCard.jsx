@@ -4,9 +4,9 @@ import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { Trash2 } from 'lucide-react'
 
-import { AuthContext } from '../context/auth-context'
-import api from '../lib/axios'
-import { setLists } from '../lib/listSlice'
+import { AuthContext } from '../../context/auth-context'
+import api from '../../lib/axios'
+import { setLists } from '../../lib/listSlice'
 
 import Icon from '../shared/Icon'
 

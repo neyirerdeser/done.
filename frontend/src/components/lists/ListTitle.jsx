@@ -1,10 +1,10 @@
 import { useState, useContext } from "react"
 import toast from 'react-hot-toast'
 
-import api from "../lib/axios"
-import { AuthContext } from '../context/auth-context'
+import api from "../../lib/axios"
+import { AuthContext } from '../../context/auth-context'
 import { useDispatch, useSelector } from "react-redux"
-import { setLists } from "../lib/listSlice"
+import { setLists } from "../../lib/listSlice"
 
 const ListTitle = ({ list, setList }) => {
     const auth = useContext(AuthContext)

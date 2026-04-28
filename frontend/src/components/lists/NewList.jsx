@@ -4,9 +4,9 @@ import { useNavigate } from 'react-router'
 import { PlusIcon } from 'lucide-react'
 import toast from 'react-hot-toast'
 
-import api from '../lib/axios'
-import { setLists } from '../lib/listSlice'
-import { AuthContext } from '../context/auth-context'
+import api from '../../lib/axios'
+import { setLists } from '../../lib/listSlice'
+import { AuthContext } from '../../context/auth-context'
 
 const NewList = () => {
   const auth = useContext(AuthContext)

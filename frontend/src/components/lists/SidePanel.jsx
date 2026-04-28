@@ -2,9 +2,9 @@ import { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 
-import api from '../lib/axios'
-import { setLists } from '../lib/listSlice'
-import { AuthContext } from '../context/auth-context'
+import api from '../../lib/axios'
+import { setLists } from '../../lib/listSlice'
+import { AuthContext } from '../../context/auth-context'
 
 import Loading from '../shared/Loading'
 import EmptyArea from '../shared/EmptyArea'

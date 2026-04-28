@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
-import api from '../lib/axios'
-import { AuthContext } from '../context/auth-context';
+import api from '../../lib/axios'
+import { AuthContext } from '../../context/auth-context';
+import done from '../../assests/done-purple.png'
 
 import AuthButton from '../users/AuthButton';
-import done from '../assests/done-purple.png'
 
 const TitleBar = () => {
     const auth = useContext(AuthContext);

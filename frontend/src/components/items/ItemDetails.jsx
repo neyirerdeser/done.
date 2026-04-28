@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from "react"
 import toast from "react-hot-toast"
 import { CalendarDays, StickyNote } from "lucide-react"
 
-import api from "../lib/axios"
-import { AuthContext } from '../context/auth-context'
+import api from "../../lib/axios"
+import { AuthContext } from '../../context/auth-context'
 
 const ItemDetails = ({ item, setItem }) => {
   const auth = useContext(AuthContext)

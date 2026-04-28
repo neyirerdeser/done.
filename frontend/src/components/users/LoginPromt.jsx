@@ -1,5 +1,5 @@
-import arrow from '../assests/arrow.png'
-import done from '../assests/done-purple.png'
+import arrow from '../../assests/arrow.png'
+import done from '../../assests/done-purple.png'
 
 const LoginPromt = () => {
   return (

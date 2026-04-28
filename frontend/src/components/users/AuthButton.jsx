@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { LogOut, UserRoundKey } from 'lucide-react'
-import { AuthContext } from '../context/auth-context';
+import { AuthContext } from '../../context/auth-context';
 
 
 const AuthButton = () => {
