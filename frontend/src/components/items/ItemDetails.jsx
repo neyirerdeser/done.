@@ -6,15 +6,18 @@ import api from "../../lib/axios"
 import { AuthContext } from '../../context/auth-context'
 
 const ItemDetails = ({ item, setItem }) => {
+  console.log('rerender. item', item.detail.dueDate)
   const auth = useContext(AuthContext)
   const headers = { Authorization: "Bearer " + auth.token }
   const [title, setTitle] = useState(item.title)
   const [note, setNote] = useState(item.detail.note || "")
   const [dueDate, setDueDate] = useState(item.detail.dueDate ? item.detail.dueDate.slice(0, 10) : "")
   const [completed, setCompleted] = useState(item.detail.completed)
+  const datePlaceholder = "YYYY-MM-DD"
 
   useEffect(() => {
     setCompleted(item.detail.completed)
+    setDueDate(item.detail.dueDate ? item.detail.dueDate.slice(0, 10) : "")
   }, [item])
 
   const editHandler = async (event) => {
@@ -39,13 +42,17 @@ const ItemDetails = ({ item, setItem }) => {
     let anyChange = titleChange || dateChange || completedChange || noteChange
 
     if (anyChange) {
+      if (dateChange && dueDate === "") {
+        toast.error("invalid date entered")
+        setDueDate(item.detail.dueDate ? item.detail.dueDate.slice(0, 10) : "")
+        return
+      }
       try {
         const response = await api.patch(`/items/${item._id}`, { title, dueDate, completed, note }, { headers })
         setItem(response.data.item)
         toast.success("task updated")
       } catch (error) {
         toast.error(error.response.data.message)
-      } finally {
       }
     }
   }
@@ -73,6 +80,9 @@ const ItemDetails = ({ item, setItem }) => {
           <CalendarDays className="size-5 text-neutral/80 mr-0.5" />
           <input
             type="date"
+            placeholder={dueDate.length > 0 ? dueDate : ""}
+            max="9999-12-31"
+            min="1000-01-01"
             value={dueDate}
             onChange={(event) => { setDueDate(event.target.value) }}
           />
@@ -92,6 +102,7 @@ const ItemDetails = ({ item, setItem }) => {
       </div>
     </form>
   )
+
   return (
     <div onBlur={editHandler} className="p-4">
       {form}
