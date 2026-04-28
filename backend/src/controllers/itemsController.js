@@ -4,7 +4,7 @@ import List from "../models/list.js";
 import HttpError from "../models/httpError.js"
 
 export const createItem = async (req, res, next) => {
-    const { title, list, dueDate } = req.body
+    const { title, list } = req.body
     const userId = req.userData.userId
 
     let listObj
@@ -18,8 +18,7 @@ export const createItem = async (req, res, next) => {
     if (listObj.creator.toString() != userId) return next(new HttpError("non-authorized user", 401))
 
     let item = new Item({ title, list })
-    item.populate("list")
-    if (dueDate) item.detail.dueDate = dueDate
+    await item.populate("list")
 
     try {
         const session = await mongoose.startSession()
@@ -52,12 +51,12 @@ export const updateItemById = async (req, res, next) => {
     if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let item
     try {
-        item = await Item.findById(id).populate("list")
+        item = await Item.findById(id)
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
-    if (!item)
-        return next(new HttpError("no such item", 404))
+    if (!item) return next(new HttpError("no such item", 404))
+    await item.populate("list")
     if (item.list.creator.toString() !== user)
         return next(new HttpError("non-authorized user", 401))
 
@@ -81,12 +80,12 @@ export const deleteItemById = async (req, res, next) => {
     if (!isValidObjectId(id)) return next(new HttpError("invalid id", 400))
     let item
     try {
-        item = await Item.findById(id).populate("list")
+        item = await Item.findById(id)
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
-    if (!item)
-        return next(new HttpError("no such item", 404))
+    if (!item) return next(new HttpError("no such item", 404))
+    await item.populate("list")
     if (item.list.creator.toString() !== user)
         return next(new HttpError("non-authorized user", 401))
 
@@ -129,7 +128,7 @@ export const getItemsByListId = async (req, res, next) => {
         return next(new HttpError(error.message, 500))
     }
     if (!list)
-        return next(new HttpError("no items exist for such list", 404))
+        return next(new HttpError("no such list", 404))
 
     res.json({ items: list.items })
 }

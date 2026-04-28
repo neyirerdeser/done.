@@ -1,123 +1,249 @@
 import request from "supertest"
-import app from "../src/server.js"
+import mongoose from "mongoose"
 
-const listId = "69e6c7e4f89a0dd817cd9e66"
-const fakeListId = "69e6c7cef89a0dd817cd9e65"
-const itemId = "69e7afd60764548ad02d48bd"
-const fakeItemId = "69e7afd60764548ad02d47bd"
+import Item from "../src/models/item.js"
+import List from "../src/models/list.js"
+import { createItem, deleteItemById, getItemById, getItemsByListId, updateItemById } from "../src/controllers/itemsController.js"
+
+const mockListId = "69e6c7e4f89a0dd817cd9e66"
+const wrongListId = "69e6c7e4f89a0dd817cd9e65"
 const emptyListId = "69e7bd953f67d334bb0e07b3"
-let testItemId
 
-describe("Retrieving existing item(s)", () => {
-    describe("given valid item id", () => {
-        it("GET /items/:iid should return an item", async () => {
-            const response = await request(app).get(`/api/items/${itemId}`)
-            expect(response.status).toBe(200)
-            expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
-        })
-    })
-    describe("given invalid item id", () => {
-        it("GET /items/:iid should return a 404 error", async () => {
-            const response = await request(app).get(`/api/items/${fakeItemId}`)
-            expect(response.status).toBe(404)
-        })
-    })
-    describe("given valid listId", () => {
-        it("GET /items/user/:lid should return Array of items for the list", async () => {
-            const response = await request(app).get(`/api/items/list/${listId}`)
-            expect(response.status).toBe(200)
-            expect(Array.isArray(response.body["items"])).toBe(true)
-        })
-    })
-    describe("given invalid listId", () => {
-        it("GET /items/user/:uid should return a 404 error", async () => {
-            const response = await request(app).get(`/api/items/user/${fakeListId}`)
-            expect(response.status).toBe(404)
-        })
-    })
-    describe("given valid listId without items", () => {
-        it("GET /items/user/:uid should return a 404 error", async () => {
-            const response = await request(app).get(`/api/items/user/${emptyListId}`)
-            expect(response.status).toBe(404)
-        })
-    })
+const mockItemId = "69e7afd60764548ad02d48bd"
+const wrongItemId = "69e7afd60764548ad02d47bd"
+
+const invalidId = "123abc"
+
+const mockUserId = "69e6c7cef89a0dd817cd9e65"
+const wrongUserId = "69e78acd5c1b55dbb8928a1d"
+
+const mockList = new List({
+    _id: mockListId,
+    title: "list",
+    items: { pull: jest.fn() }, // make it pull-able
+    creator: mockUserId
 })
-
-describe("Creating an item", () => {
-    describe("given valid content and user", () => {
-        it("POST /items should create a new item and add it to user items", async () => {
-            const response = await request(app).post("/api/items").send({
-                title: "title",
-                list: listId
-            })
-            expect(response.status).toBe(201)
-            expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
-            expect(response.body.item.title).toEqual("title")
-
-            testItemId = response.body.item._id.toString()
-            const listResponse = await request(app).get(`/api/items/list/${listId}`)
-            expect(testItemId).toEqual(listResponse.body.items[0])
-        })
-    })
-    describe("given invalid user", () => {
-        it("POST /items should return a 404 error", async () => {
-            const response = await request(app).post("/api/items").send({
-                title: "title",
-                list: fakeListId
-            })
-            expect(response.status).toBe(404)
-        })
-    })
-    describe("given invalid content", () => {
-        it("POST /items should return a 500 error", async () => {
-            const response = await request(app).post("/api/items").send({
-                list: listId
-            })
-            expect(response.status).toBe(500)
-        })
-    })
+const mockItem = new Item({
+    _id: mockItemId,
+    title: "item",
+    list: mockList,
+    details: {
+        completed: false
+    }
 })
+const wrongList = {
+    title: "list",
+    items: [],
+    creator: wrongUserId
+}
+const res = { status: jest.fn().mockReturnThis(), json: jest.fn().mockReturnThis() }
+const next = jest.fn()
+List.prototype.save = jest.fn().mockImplementation(() => { })
+Item.prototype.save = jest.fn().mockImplementation(() => { })
+Item.prototype.deleteOne = jest.fn().mockImplementation(() => { })
+Item.prototype.populate = jest.fn().mockImplementation(
+    function () {
+        this.list = mockList
+        return Promise.resolve(this)
+    })
+const mockSession = {
+    startTransaction: jest.fn(),
+    commitTransaction: jest.fn(),
+}
 
-describe("Updating an existing item", () => {
-    describe("given valid content", () => {
-        it("PATCH /items/:iid should update item with given information", async () => {
-            const response = await request(app).patch(`/api/items/${testItemId}`).send({
-                title: "new title",
-            })
-            expect(response.status).toBe(200)
-            expect(response.headers['content-type']).toEqual(expect.stringContaining("json"))
-            expect(response.body.item.title).toEqual("new title")
+describe("ItemsController", () => {
+    describe("getItemsById : GET /items/:iid", () => {
+        it("given valid item id, should return an item", async () => {
+            Item.findById = jest.fn().mockReturnValueOnce(mockItem)
+            const req = { params: { iid: mockItemId } }
+            await getItemById(req, res)
+            expect(res.json).toHaveBeenCalledWith({ item: mockItem })
+        })
+        it("given invalid item id, should return a 404 error", async () => {
+            Item.findById = jest.fn().mockReturnValueOnce(null)
+            const req = { params: { iid: wrongItemId } }
+            await getItemById(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 404 }))
+        })
+        it("given invalid id type, should return a 400 error", async () => {
+            const req = { params: { iid: invalidId } }
+            await getItemById(req, res, next)
         })
     })
-    describe("given invalid item id", () => {
-        it("PATCH /items/:iid should return a 404 error", async () => {
-            const response = await request(app).patch(`/api/items/${fakeItemId}`).send({
-                title: "new title",
-            })
-            expect(response.status).toBe(404)
+    describe("getItemsByListId : GET /items/user/:lid", () => {
+        it("given valid listId, should return Array of items for the list", async () => {
+            List.findById = jest.fn().mockReturnValueOnce(mockList)
+            const req = { params: { lid: mockListId } }
+            await getItemsByListId(req, res)
+            expect(res.json).toHaveBeenCalledWith({ items: mockList.items })
+        })
+        it("given invalid listId, should return a 404 error", async () => {
+            List.findById = jest.fn().mockReturnValueOnce(null)
+            const req = { params: { lid: mockListId } }
+            await getItemsByListId(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 404 }))
+        })
+        it("given invalid id type, should return a 400 error", async () => {
+            const req = { params: { lid: invalidId } }
+            await getItemsByListId(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 400 }))
         })
     })
-})
+    describe("createItem : POST /items", () => {
+        it("given valid content and user, should create a new item and add it to user items", async () => {
+            List.findById = jest.fn().mockReturnValueOnce(mockList)
 
-describe("Deleting an existing item", () => {
-    describe("given valid item id and user", () => {
-        it("DELETE /items/:iid should delete the item and remove from list items", async () => {
-            const response = await request(app).delete(`/api/items/${testItemId}`)
-            expect(response.status).toBe(200)
-            const listResponse = await request(app).get(`/api/items/list/${listId}`)
-            expect(listResponse.body.items).not.toContain(testItemId)
+            const updateSpy = jest.spyOn(List.prototype, "updateOne").mockResolvedValue(true)
+            jest.spyOn(mongoose, 'startSession').mockResolvedValue(mockSession)
+
+            const req = {
+                body: {
+                    title: "title",
+                    list: mockListId,
+
+                },
+                userData: { userId: mockUserId }
+            }
+            await createItem(req, res, next)
+
+            expect(mongoose.startSession).toHaveBeenCalled()
+            expect(mockSession.startTransaction).toHaveBeenCalled()
+            expect(Item.prototype.save).toHaveBeenCalled()
+            expect(updateSpy).toHaveBeenCalled()
+            expect(mockSession.commitTransaction).toHaveBeenCalled()
+
+            expect(res.status).toHaveBeenCalledWith(201)
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining(
+                {
+                    item: expect.objectContaining(
+                        { title: "title" })
+                }))
+
+        })
+        it("given invalid list, should return a 404 error", async () => {
+            List.findById = jest.fn().mockReturnValueOnce(null)
+            const req = {
+                body: {
+                    title: "title",
+                    list: wrongListId,
+                },
+                userData: { userId: mockUserId }
+            }
+            await createItem(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 404 }))
+        })
+        it("given wrong user, should return a 401 error", async () => {
+            List.findById = jest.fn().mockReturnValueOnce(wrongList)
+            const req = {
+                body: {
+                    title: "title",
+                    list: wrongListId,
+
+                },
+                userData: { userId: mockUserId }
+            }
+            await createItem(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 401 }))
         })
     })
-    describe("given invalid item id", () => {
-        it("DELETE /items/:iid should return a 404 error", async () => {
-            const response = await request(app).delete(`/api/items/${fakeItemId}`)
-            expect(response.status).toBe(404)
+    describe("updateItemById : PATCH /items/:iid", () => {
+        it("given valid content, should update item with given information", async () => {
+            const req = {
+                body: { completed: true },
+                params: { iid: mockItemId },
+                userData: { userId: mockUserId }
+            }
+            Item.findById = jest.fn().mockReturnValue(mockItem)
+
+            await updateItemById(req, res)
+            expect(res.json).toHaveBeenCalledWith(expect.objectContaining(
+                {
+                    item: expect.objectContaining(
+                        {
+                            detail: expect.objectContaining(
+                                { completed: true })
+                        })
+                }))
+
+        })
+        it("given invalid item id, should return a 404 error", async () => {
+            const req = {
+                body: { completed: true },
+                params: { iid: mockItemId },
+                userData: { userId: wrongUserId }
+            }
+            Item.findById = jest.fn().mockReturnValue(null)
+            await updateItemById(req, res, next)
+
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 404 }))
+        })
+        it("given invalid id type, should return a 400 error", async () => {
+            const req = {
+                body: { completed: true },
+                params: { iid: invalidId },
+                userData: { userId: mockUserId }
+            }
+            await updateItemById(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 400 }))
+        })
+        it("given invalid user, should return a 401 error", async () => {
+            const req = {
+                body: { completed: true },
+                params: { iid: mockItemId },
+                userData: { userId: wrongUserId }
+            }
+            Item.findById = jest.fn().mockReturnValue(mockItem)
+            await updateItemById(req, res, next)
+
+            expect(Item.findById).toHaveBeenCalled()
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 401 }))
+
         })
     })
-    // describe("given invalid user", () => {
-    //     it("DELETE /items/:iid should return a 401 error", async () => {
-    //         const response = await request(app).delete(`/api/items/${itemId}`)
-    //         expect(response.status).toBe(401)
-    //     })
-    // })
+    describe("deleteItemById: DELETE /items/:iid", () => {
+        it("given valid item id and user, should delete the item and remove from list items", async () => {
+            const req = {
+                params: { iid: mockItemId },
+                userData: { userId: mockUserId }
+            }
+            Item.findById = jest.fn().mockReturnValue(mockItem)
+            jest.spyOn(mongoose, 'startSession').mockResolvedValue(mockSession)
+            await deleteItemById(req, res, next)
+
+            expect(mongoose.startSession).toHaveBeenCalled()
+            expect(mockSession.startTransaction).toHaveBeenCalled()
+            expect(List.prototype.save).toHaveBeenCalled()
+            expect(Item.prototype.deleteOne).toHaveBeenCalled()
+            expect(mockSession.commitTransaction).toHaveBeenCalled()
+            expect(res.json).toHaveBeenCalledWith({ message: "item deleted" })
+        })
+        it("given invalid id type, should return a 400 error", async () => {
+            const req = {
+                params: { iid: invalidId },
+                userData: { userId: mockUserId }
+            }
+            await deleteItemById(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 400 }))
+        })
+        it("given invalid item id, should return a 404 error", async () => {
+            const req = {
+                params: { iid: wrongItemId },
+                userData: { userId: mockUserId }
+            }
+            Item.findById = jest.fn().mockReturnValue(null)
+            await deleteItemById(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 404 }))
+        })
+        it("given invalid user, should return a 401 error", async () => {
+            const req = {
+                params: { iid: mockItemId },
+                userData: { userId: wrongUserId }
+            }
+            Item.findById = jest.fn().mockReturnValue(mockItem)
+
+            await deleteItemById(req, res, next)
+            expect(next).toHaveBeenCalledWith(expect.objectContaining({ code: 401 }))
+        })
+    })
+
 })

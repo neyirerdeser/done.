@@ -41,7 +41,6 @@ const ItemDetails = ({ item, setItem }) => {
     if (anyChange) {
       try {
         const response = await api.patch(`/items/${item._id}`, { title, dueDate, completed, note }, { headers })
-        console.log(response.data.item)
         setItem(response.data.item)
         toast.success("task updated")
       } catch (error) {
