@@ -29,6 +29,8 @@ const ListItems = () => {
             } catch (error) {
                 setList(null)
                 toast.error(error.response.data.message)
+            } finally {
+                setLoading(false)
             }
         }
         fetchList()
@@ -55,7 +57,6 @@ const ListItems = () => {
         return () => {
             setItems([])
         }
-
     }, [list])
 
     return (
@@ -65,18 +66,15 @@ const ListItems = () => {
                 <div className="w-1/2">
                     {loading && <Loading />}
                     {!loading && <div>
-
-                        <div>
-                            <NewItem setItems={setItems} list={list} />
-                            {items.length == 0 && <EmptyArea textColor={"text-base-100"} />}
-                            {items.length > 0 && items.map((item) => (
-                                <ItemCard
-                                    key={item}
-                                    itemId={item}
-                                    setItems={setItems}
-                                />
-                            ))}
-                        </div>
+                        <NewItem setItems={setItems} list={list} />
+                        {items.length == 0 && <EmptyArea textColor={"text-base-100"} />}
+                        {items.length > 0 && items.map((item) => (
+                            <ItemCard
+                                key={item}
+                                itemId={item}
+                                setItems={setItems}
+                            />
+                        ))}
                     </div>}
                 </div>
             </div>

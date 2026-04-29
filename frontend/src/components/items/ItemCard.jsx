@@ -68,7 +68,7 @@ const ItemCard = ({ itemId, setItems }) => {
               checked={item.detail.completed}
               onChange={completeHandler}
             />
-            <div onClick={() => { setDetailsOpen(true) }} className={`flex-1 mx-2`}>
+            <div data-testid="item-card" onClick={() => { setDetailsOpen(true) }} className={`flex-1 mx-2`}>
               {item.title}
             </div>
             <button onClick={(e) => deleteHandler(e)} className='btn btn-sm btn-error btn-outline px-1.5 mx-1'>

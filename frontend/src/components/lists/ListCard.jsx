@@ -35,7 +35,7 @@ const ListCard = ({ list }) => {
     <div className='py-1 mr-1'>
       <Link to={`/list/${list._id}`} className='h-10 flex justify-between items-center hover:bg-base-300 disabled:bg-base-300 p-1 rounded-md'>
         <Icon name={list.iconName} className='size-5 mx-1' />
-        <div className='flex-1 mx-2'>
+        <div data-testid="list-card" className='flex-1 mx-2'>
           {list.title}
         </div>
         <button onClick={(e) => deleteHandler(e, list._id)} className='btn btn-sm btn-error btn-outline px-1.5 mx-1'>

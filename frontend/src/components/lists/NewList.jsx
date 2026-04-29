@@ -30,6 +30,7 @@ const NewList = () => {
       const listRes = await api.post("/lists",
         { title, creator: auth.userId }, { headers })
       const response = await api.get(`/lists/user/${auth.userId}`, { headers })
+
       setTitle("")
       dispatch(setLists(response.data.lists))
       navigate(`/list/${listRes.data.list._id}`)

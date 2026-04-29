@@ -40,7 +40,6 @@ const SidePanel = () => {
     fetchLists()
     // decided against cleanup here for loading speeds
   }, [auth])
-
   return (
     <div className='h-full mx-2 bg-base-200 overflow-y-auto'>
       {auth.loggedIn && <NewList />}
