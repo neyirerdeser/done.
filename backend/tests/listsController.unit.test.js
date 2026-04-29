@@ -1,4 +1,3 @@
-import request from "supertest"
 import mongoose from "mongoose"
 
 import List from "../src/models/list.js"

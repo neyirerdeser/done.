@@ -1,4 +1,3 @@
-import request from "supertest"
 import mongoose from "mongoose"
 
 import Item from "../src/models/item.js"

@@ -33,7 +33,7 @@ app.use((error, _, res, next) => {
 // LISTEN
 connectDB(process.env.MONGO_URI).then(() => {
     app.listen(PORT, () => {
-        // console.log("Server is running on port", PORT)
+        console.log("Server is running on port", PORT)
     })
 })
 

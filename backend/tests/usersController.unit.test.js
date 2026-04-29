@@ -1,5 +1,3 @@
-import request from "supertest"
-
 import User from "../src/models/user.js"
 import { getUserById, login, signup } from "../src/controllers/usersController.js"
 
