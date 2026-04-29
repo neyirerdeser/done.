@@ -3,7 +3,7 @@ import HttpError from "../models/httpError.js"
 import User from "../models/user.js"
 
 import jwt from "jsonwebtoken"
-// import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs"
 
 export const getUserById = async (req, res, next) => {
     const id = req.params.uid
@@ -21,7 +21,19 @@ export const getUserById = async (req, res, next) => {
 
 export const signup = async (req, res, next) => {
     const { username, password } = req.body
-    let user = new User({ username, password, lists: [] })
+
+    let hashedPassword;
+    try {
+        hashedPassword = await bcrypt.hash(password, 12) // 12 salting sessions
+    } catch (error) {
+        return next(new HttpError(error.message, 500));
+    }
+
+    let user = new User({
+        username,
+        password: hashedPassword,
+        lists: []
+    })
     try {
         await user.save()
     } catch (error) {
@@ -29,8 +41,6 @@ export const signup = async (req, res, next) => {
             return next(new HttpError("user already exists", 422))
         return next(new HttpError(error.message, 500))
     }
-
-    // TODO : adding password encryption ==> bcrypt is installed
 
     let token
     try {
@@ -57,8 +67,14 @@ export const login = async (req, res, next) => {
     }
     if (!user) return next(new HttpError("no user associated with given username", 404))
 
-    // TODO : if added encryption, must decrypt here
-    if (user.password != password) return next(new HttpError("invalid credentials", 403))
+    let validPassword
+    try {
+        validPassword = await bcrypt.compare(password, user.password)
+    } catch (error) {
+        return next(new HttpError(error.message, 500))
+    }
+    if (!validPassword)
+        return next(new HttpError("invalid credentials", 403))
 
     let token
     try {

@@ -1,3 +1,5 @@
+import bcrypt from "bcryptjs"
+
 import User from "../src/models/user.js"
 import { getUserById, login, signup } from "../src/controllers/usersController.js"
 
@@ -71,6 +73,7 @@ describe("UsersControllers", () => {
     describe("login : POST /users/login", () => {
         it("given valid username and password : should return signed users id and token", async () => {
             User.findOne = jest.fn().mockReturnValueOnce(mockUser)
+            bcrypt.compare = jest.fn().mockReturnValueOnce(true)
             const req = {
                 body: {
                     username,
@@ -92,6 +95,7 @@ describe("UsersControllers", () => {
         })
         it("given invalid password, should return a 403 error", async () => {
             User.findOne = jest.fn().mockReturnValueOnce(mockUser)
+            bcrypt.compare = jest.fn().mockReturnValueOnce(false)
             const req = {
                 body: {
                     username,
