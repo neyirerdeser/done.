@@ -19,7 +19,6 @@ const ItemCard = ({ itemId, setItems }) => {
       try {
         const response = await api.get(`/items/${itemId}`, { headers })
         setItem(response.data.item)
-        console.log('fetch ITEM', response.data)
       } catch (error) {
         setItem(null)
         toast.error(error.response.data.message)
