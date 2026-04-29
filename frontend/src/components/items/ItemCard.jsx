@@ -19,6 +19,7 @@ const ItemCard = ({ itemId, setItems }) => {
       try {
         const response = await api.get(`/items/${itemId}`, { headers })
         setItem(response.data.item)
+        console.log('fetch ITEM', response.data)
       } catch (error) {
         setItem(null)
         toast.error(error.response.data.message)
@@ -32,7 +33,6 @@ const ItemCard = ({ itemId, setItems }) => {
 
   const deleteHandler = async (event) => {
     event.preventDefault()
-    setSaving(true)
     setDetailsOpen(false)
     if (!window.confirm("Are you sure you'd like to delete this item? This cannot be undone.")) return
     try {
@@ -41,8 +41,6 @@ const ItemCard = ({ itemId, setItems }) => {
       setItems(response.data.items)
     } catch (error) {
       toast.error(error.response.data.message)
-    } finally {
-      setSaving(false)
     }
   }
 
@@ -71,7 +69,7 @@ const ItemCard = ({ itemId, setItems }) => {
             <div data-testid="item-card" onClick={() => { setDetailsOpen(true) }} className={`flex-1 mx-2`}>
               {item.title}
             </div>
-            <button onClick={(e) => deleteHandler(e)} className='btn btn-sm btn-error btn-outline px-1.5 mx-1'>
+            <button data-testid="item-delete" onClick={(e) => deleteHandler(e)} className='btn btn-sm btn-error btn-outline px-1.5 mx-1'>
               <Trash2 className='size-5 stroke-2' />
             </button>
           </div>

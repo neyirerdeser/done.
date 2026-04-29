@@ -38,7 +38,7 @@ const ListCard = ({ list }) => {
         <div data-testid="list-card" className='flex-1 mx-2'>
           {list.title}
         </div>
-        <button onClick={(e) => deleteHandler(e, list._id)} className='btn btn-sm btn-error btn-outline px-1.5 mx-1'>
+        <button data-testid="list-delete" onClick={(e) => deleteHandler(e, list._id)} className='btn btn-sm btn-error btn-outline px-1.5 mx-1'>
           <Trash2 className='size-5 stroke-2' />
         </button>
       </Link>

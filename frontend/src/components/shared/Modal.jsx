@@ -14,6 +14,7 @@ const Modal = ({ open, onClose, bgStyling = "", fgStyling = "", left = false, ch
       `}
     >
       <div
+        data-testid="modal"
         onClick={(event) => event.stopPropagation()}
         className={`
           bg-base-200

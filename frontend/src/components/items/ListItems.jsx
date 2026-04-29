@@ -12,6 +12,7 @@ import ListTitle from "../lists/ListTitle"
 import EmptyArea from "../shared/EmptyArea"
 
 const ListItems = () => {
+    console.log('render')
     const listId = useParams().lid
     const auth = useContext(AuthContext)
     const headers = { Authorization: "Bearer " + auth.token }
@@ -25,6 +26,7 @@ const ListItems = () => {
             setLoading(true)
             try {
                 const response = await api.get(`/lists/${listId}`, { headers })
+                console.log('fetch list', response.data)
                 setList(response.data.list)
             } catch (error) {
                 setList(null)
@@ -44,6 +46,7 @@ const ListItems = () => {
             setLoading(true)
             try {
                 const response = await api.get(`/items/list/${listId}`, { headers })
+                console.log('fetch items',response.data)
                 setItems(response.data.items)
             } catch (error) {
                 setItems([])

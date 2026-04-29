@@ -1,4 +1,4 @@
-import { render, fireEvent, screen } from '@testing-library/react'
+import { render, fireEvent, screen, waitFor } from '@testing-library/react'
 
 import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
@@ -27,6 +27,7 @@ const mockList = {
 }
 
 const store = configureStore({ reducer: { lists: listReducer } })
+window.confirm = vi.fn(() => true)
 
 const server = setupServer(
     http.get('http://localhost:5000/api/lists/:lid', (req, res, ctx) => {
@@ -40,6 +41,9 @@ const server = setupServer(
     }),
     http.post('http://localhost:5000/api/items', (req, res, ctx) => {
         return HttpResponse.json({ item: mockItem })
+    }),
+    http.delete('http://localhost:5000/api/items/:iid', (req, res, ctx) => {
+        return HttpResponse.json({ message: "deleted" })
     }),
 )
 
@@ -62,9 +66,13 @@ test("creating new item", async () => {
         </Provider>
 
     )
-    
+
     // moving before server.use fixed the issue where the special get method was being used before the render
     const input = await screen.findByPlaceholderText("New Item")
+    const form = input.closest("form")
+
+    // pre-condition
+    expect(screen.queryByTestId("item-card")).not.toBeInTheDocument()
 
     server.use(
         http.get('http://localhost:5000/api/items/list/:lid', (req, res, ctx) => {
@@ -72,10 +80,43 @@ test("creating new item", async () => {
         }, { once: true }),
     )
 
-    const form = input.closest("form")
     fireEvent.change(input, { target: { value: title } })
     fireEvent.submit(form)
 
     const itemCard = await screen.findByTestId("item-card")
     expect(itemCard).toHaveTextContent(title)
+})
+
+test("deleting an item", async () => {
+    render(
+        <Provider store={store}>
+            <AuthContext.Provider value={{
+                loggedIn: true,
+                token: 'mock-token',
+                userId: "123"
+            }}>
+                <MemoryRouter initialEntries={['/']}>
+                    <ListItems />
+                </MemoryRouter>
+            </AuthContext.Provider>
+        </Provider>
+    )
+    server.use(http.get('http://localhost:5000/api/items/list/:lid', (req, res, ctx) => {
+        return HttpResponse.json({ items: [mockItem] })
+    }))
+
+    const item = await screen.findAllByTestId("item-card")
+
+    const deleteButton = await screen.findByTestId("item-delete")
+    expect(deleteButton).toBeInTheDocument()
+
+    server.use(http.get('http://localhost:5000/api/items/list/:lid', (req, res, ctx) => {
+        return HttpResponse.json({ items: [] })
+    }, { once: true }))
+
+    fireEvent.click(deleteButton)
+    await waitFor(() => {
+        const itemCard = screen.queryByTestId("item-card")
+        expect(itemCard).not.toBeInTheDocument()
+    })
 })
