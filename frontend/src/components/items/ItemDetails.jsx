@@ -6,7 +6,6 @@ import api from "../../lib/axios"
 import { AuthContext } from '../../context/auth-context'
 
 const ItemDetails = ({ item, setItem }) => {
-  console.log('rerender. item', item.detail.dueDate)
   const auth = useContext(AuthContext)
   const headers = { Authorization: "Bearer " + auth.token }
   const [title, setTitle] = useState(item.title)
