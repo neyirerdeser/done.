@@ -61,8 +61,10 @@ export const updateItemById = async (req, res, next) => {
         return next(new HttpError("non-authorized user", 401))
 
     item.title = title || item.title
-    item.detail.dueDate = dueDate || item.detail.dueDate
     item.detail.note = note || item.detail.note
+    item.detail.dueDate = dueDate || item.detail.dueDate
+    if(dueDate === "") item.detail.dueDate = null
+
     if (typeof (completed) === 'boolean')
         item.detail.completed = completed
     try {
@@ -70,6 +72,8 @@ export const updateItemById = async (req, res, next) => {
     } catch (error) {
         return next(new HttpError(error.message, 500))
     }
+
+    item.depopulate("list")
     res.json({ item })
 }
 
