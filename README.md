@@ -27,10 +27,10 @@ A task manager, supporting multiple users
 
 ## Future Improvements / Features
 -	backend
-  -	don’t respond with full object, send what needed from frontend
-  -	split get endpoints to avoid page flickers (list title and content can be split)
+    -	don’t respond with full object, send what needed from frontend
+    -	split get endpoints to avoid page flickers (list title and content can be split)
 -	frontend
-  -	signup and register can be separate pages with more visual difference
+    -	signup and register can be separate pages with more visual difference
 -	rate limiting
 - "today" list showing all tasks that are due today
 - custom list icons
