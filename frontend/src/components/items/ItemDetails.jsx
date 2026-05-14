@@ -44,7 +44,6 @@ const ItemDetails = ({ item, setItem }) => {
 		let anyChange = titleChange || dateChange || completedChange || noteChange
 
 		if (!anyChange) return
-		const dateWasEmpty = !item.detail.dueDate
 		let validDueDate = dueDate
 
 		if (!item.detail.dueDate) {

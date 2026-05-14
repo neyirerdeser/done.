@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import toast from 'react-hot-toast'
 import { useDispatch } from 'react-redux'
 import { Trash2 } from 'lucide-react'
