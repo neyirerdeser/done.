@@ -1,6 +1,23 @@
 # done.
 A task manager, supporting multiple users
 
+## To run:
+create a .env file in the backend folder with following fields
+- MONGO_URI : connection link to your mongo database
+- PRIVATE_KEY : ideally jwt generated key (could be anything)
+- FRONTEND_URL : after running frontend get the url it runs in (it is likely http://localhost:5173 but safer to check for yourself)
+- PORT: you can use this to assign a specific port for your backend to run on, otherwise it will run on port 5000
+
+after variables are set youll need two terminals for backend and frontend. order of operations does not matter here
+- BACKEND 
+  - In one terminal go to backend folder : cd backend
+  - Run the server : npm run dev
+- FRONTEND
+  - In second terminal go to frantend folder : cd frontend
+  - Run the server : npm run dev
+ 
+Once you run the frontend, it will tell you which url its hosted at and you can start using it!
+
 ## Backend
 - Framework: Node Express
 - Tests: Jest
